@@ -30,6 +30,7 @@ urlpatterns = [
     path('log-in',main_views.log_in,name="log_in"),
     path('register-cafe',cafe_views.register_cafe_view,name="register_cafe"),
     path('registration-success/', cafe_views.registration_success_view, name='registration_success'),
+    path('search/', main_views.search, name='search'),
 ]
 
 if settings.DEBUG:

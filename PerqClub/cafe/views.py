@@ -20,7 +20,7 @@ from django.views.generic.detail import DetailView
 
 def cafe(request):
     cafes=Cafe.objects.all()
-    return render(request,"cafes.html",{'cafes':cafes})
+    return render(request,"cafes.html",{'cafes':cafes,'locations': CafeLocation.objects.all()})
 # Create your views here.
 # Assuming you're getting a single cafe instance
 
@@ -114,10 +114,10 @@ def register_cafe_view(request):
         'image_formset': image_formset,
         'highlight_formset': highlight_formset,
     }
-    return render(request, 'register-cafe.html', context)
+    return render(request, 'register-cafe.html', context, {'locations': CafeLocation.objects.all()})
 
 def registration_success_view(request):
-    return render(request, 'registration_success.html')
+    return render(request, 'registration_success.html', {'locations': CafeLocation.objects.all()})
 
 
 # --- Class-Based Views for Review Functionality ---
@@ -156,7 +156,7 @@ class CafeDetailWithReviewsView(LoginRequiredMixin, View):
             'cafe_highlights': cafe_highlights, # Queryset of highlights for this cafe
         }
         # Render the template with the gathered context data.
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, context, {'locations': CafeLocation.objects.all()})
 
     def post(self, request, pk, *args, **kwargs): # Changed cafe_id to pk to match URL
         """
@@ -197,7 +197,7 @@ class CafeDetailWithReviewsView(LoginRequiredMixin, View):
                 'cafe_images': cafe_images,     # Include images on re-render
                 'cafe_highlights': cafe_highlights, # Include highlights on re-render
             }
-            return render(request, self.template_name, context)
+            return render(request, self.template_name, context, {'locations': CafeLocation.objects.all()})
 
 class AllReviewsListView(View):
     """
@@ -221,7 +221,7 @@ class AllReviewsListView(View):
             'reviews': reviews, # Queryset of all reviews for this cafe
         }
         # Render the template with all reviews.
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, context, {'locations': CafeLocation.objects.all()})
 
 class CafeLocationDetails(DetailView):
     model=CafeLocation

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}PerqClub - Search Result for {{ query }} {% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'css/cafes.css' %}">{% endblock %}
+{% block content %}
+<section class="featured-cafes" id="cafes">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Search Results for: {{ query }}</h2>
+            <div class="accent-line"></div>
+        </div>
+        <div class="cafe-grid">
+            {% if cafes %}
+                {% for cafe in cafes %}
+                    {% include 'cafescard.html' with c=cafe %}
+                {% endfor %}
+            {% else %}
+                <h1>No Cafes Found for "{{ query }}"</h1>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}
+{% block js %}<script src="{% static 'js/cafes.js' %}"></script>{% endblock %}

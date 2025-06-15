@@ -36,12 +36,12 @@
            <li><select class="location-select" onchange="location.href=this.value">
             <option value="">Select Location</option>
             {% for location in locations %}
-              <option value="{% url 'cafe_location' location.location_slug %}">{{ location.location_name }}</option>
+              <option value="{% url 'cafe_location' location.location_slug %}">{{ location.location_name }} {{name}}</option>
             {% endfor %}
           </select></li>
            <li><div class="search-container">
-                 <form class="search-form">
-                     <input type="text" class="search-input" placeholder="Search cafes, perks, events...">
+                 <form class="search-form" action="{% url 'search' %}" method="GET">
+                     <input type="text" class="search-input" placeholder="Search cafes, perks, events..." name='q'>
                      <button type="submit" class="search-button">🔍</button>
                  </form>
              </div></li>
