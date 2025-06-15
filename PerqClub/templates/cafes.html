@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}PerqClub - Cafes{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/cafes.css' %}">
+{% endblock %}
+{% block content %}
+  <main>
+      <!-- Featured Cafes -->
+    <section class="featured-cafes" id="cafes">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Our Partner's Cafes</h2>
+          <div class="accent-line"></div>
+      </div>
+        <div class="cafe-grid">
+       
+           {% for cafe in cafes %}
+           {% include 'cafescard.html' with c=cafe %}
+           {% endfor %}
+        
+        
+        </div>
+         <div class="end-lines">
+          <p>~~ More Café coming soon !! ~~</p>
+        </div>
+     
+    </section>
+    </main>
+
+
+{% endblock %}
+
+{% block js %}<script src="{% static 'js/cafes.js' %}"></script>{% endblock %}

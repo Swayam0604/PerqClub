@@ -1,0 +1,111 @@
+{% extends "base.html" %} {% load static %} {% block title %}PerQClub - SignUp
+{% endblock %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/sign-up.css' %}" />
+{% endblock css %} {% block content %}
+
+<div class="content">
+  <div class="auth-container">
+    <div class="auth-image">
+      <div class="auth-image-overlay">
+        <h2>Join PerqClub Today</h2>
+        <p>
+          One membership, 20+ amazing cafés. Exclusive perks for coffee lovers.
+        </p>
+      </div>
+    </div>
+
+    <div class="auth-forms">
+      <div class="form-header">
+        <h2 class="form-title">Create Account</h2>
+        <a href="{% url "log_in" %}" class="switch-form">Already have an account?</a>
+      </div>
+
+      <div class="form-container">
+        <form class="form" id="signup-form" action="" method="POST">
+          <div class="input-group">
+            <label for="signup-name">First Name</label>
+            <input
+              type="text"
+              id="signup-first-name"
+              name="first_name"
+              required
+            />
+
+            <label for="signup-name">Last Name</label>
+            <input
+              type="text"
+              id="signup-name"
+              name="last_name"
+              required
+            
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" name="email" required value="" />
+          </div>
+
+          <div class="input-group">
+            <label for="signup-password">Password</label>
+            <input
+              type="password"
+              id="signup-password"
+              name="password"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="signup-confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="signup-confirm-password"
+              name="confirm_password"
+              required
+            />
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="terms" name="terms_accepted" required />
+            <label for="terms"
+              >I agree to the
+              <a href="/terms" target="_blank" >Terms & Conditions</a></label
+            >
+          </div>
+
+          <button type="submit" class="submit-btn">Create Account</button>
+          <a
+            href="/membership"
+            class="alt-submit-btn"
+            style="text-align: center; text-decoration: none"
+            >Get Membership</a
+          >
+
+          <div class="divider"><span>OR</span></div>
+
+          <div class="social-login">
+            <button
+              type="button"
+              class="social-btn"
+              onclick="window.location.href='/signup/google'"
+            >
+              Google
+            </button>
+            <button
+              type="button"
+              class="social-btn"
+              onclick="window.location.href='/signup/facebook'"
+            >
+              Facebook
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'js/sign-up.js' %}"></script>
+{% endblock js %}

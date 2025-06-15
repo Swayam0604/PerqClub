@@ -1,0 +1,58 @@
+{% load static %}
+ <!-- Mobile Menu Overlay -->
+ <div class="overlay" id="overlay"></div>
+
+ <!-- Header -->
+ <header>
+   <div class="container" style="max-width: 1400px;">
+     <div class="header-content">
+       <a href="../templates/index.html"><div class="logo">Per<span>q</span>Club</div></a>
+       <button
+         class="mobile-menu-toggle"
+         id="menuToggle"
+         onclick="toggleMenu()"
+       >
+         <div class="user-icon">
+           <svg
+             xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+           >
+             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+             <circle cx="12" cy="7" r="4"></circle>
+           </svg>
+         </div>
+       </button>
+       <nav id="mainNav">
+         <div class="nav-center">
+         
+         <ul>
+           <li><select class="location-select" onchange="location.href=this.value">
+            <option value="">Select Location</option>
+            {% for location in locations %}
+              <option value="{% url 'cafe_location' location.location_slug %}">{{ location.location_name }}</option>
+            {% endfor %}
+          </select></li>
+           <li><div class="search-container">
+                 <form class="search-form">
+                     <input type="text" class="search-input" placeholder="Search cafes, perks, events...">
+                     <button type="submit" class="search-button">🔍</button>
+                 </form>
+             </div></li>
+           <li><a href="#">Events</a></li>
+           <li><a href="{% url 'cafe_list' %}">Cafés</a></li>
+           <li><a href="../templates/membership.html">Memberships</a></li>
+           <li><a href="{% url 'About-us' %}">About Us</a></li>
+           <li><a href="../templates/login.html" class="cta-button-2" >Log In</a></li>
+           <li><a href="{% url 'register_cafe' %}" class="cta-button Join-now">Join Now</a></li>
+         </ul>
+       </nav>
+     </div>
+   </div>
+ </header>

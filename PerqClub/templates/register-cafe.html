@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}PerQClub - SignUp
+{% endblock %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/register-cafe.css' %}" />
+{% endblock css %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="form-container">
+    <div class="form-logo-container">
+      <div class="form-logo">
+        <i class="fas fa-coffee"></i>
+        <div class="steam">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Join the PreqClub Network</h2>
+    <p class="form-description">
+      Register your café with us and get discovered by coffee enthusiasts in your area!
+    </p>
+    
+    <form action="{% url 'register_cafe' %}" enctype="multipart/form-data" method="POST" id="register-form" novalidate>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="form-section">
+        <div class="section-header active">
+          <h2>Cafe Details</h2>
+          <div class="accent-line"></div>
+          <i class="fas fa-chevron-down toggle-icon"></i>
+        </div>
+        <div class="form-grid active">
+          <div class="form-group">
+            <label for="cafe_name">Café Name <span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-store"></i>
+              {{ form.cafe_name }}
+              {{ form.cafe_name.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="branch_name">Branch Name</label>
+            <div class="icon-input">
+              <i class="fas fa-code-branch"></i>
+              {{ form.branch_name }}
+              {{ form.branch_name.errors }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cafe_description">Description<span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-info-circle"></i>
+              {{ form.cafe_description }}
+              {{ form.cafe_description.errors }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cafe_address">Address <span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ form.cafe_address }}
+              {{ form.cafe_address.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cafe_location">Location <span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-location-dot"></i>
+              {{ form.cafe_location }}
+              {{ form.cafe_location.errors }}    
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="branch_manager_name">Manager Name</label>
+            <div class="icon-input">
+              <i class="fas fa-user"></i>
+              {{ form.branch_manager_name }}
+              {{ form.branch_manager_name.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="opening_hours">Opening Time<span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-clock"></i>
+              {{ form.opening_hours }}
+              {{ form.opening_hours.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="closing_hours">Closing Time<span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-clock"></i>
+              {{ form.closing_hours }}
+              {{ form.closing_hours.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contact_email">Manager Email <span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-envelope"></i>
+              {{ form.contact_email }}
+              {{ form.contact_email.errors }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contact_phone">Phone Number<span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-phone"></i>
+              {{ form.contact_phone }}
+              {{ form.contact_phone.errors }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="website_url">Website URL</label>
+            <div class="icon-input website_url">
+              <i class="fas fa-globe"></i>
+              {{ form.website_url }}
+              {{ form.website_url.errors }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cafe_address">Cafe Specialty<span class="required-mark">*</span></label>
+            <div class="icon-input">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ form.cafe_specialty }}
+              {{ form.cafe_specialty.errors }}
+            </div>
+
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-header">
+          <h2>Cafe Images</h2>
+          <div class="accent-line"></div>
+          <i class="fas fa-chevron-down toggle-icon"></i>
+        </div>
+        <div class="form-grid ">
+          <div class="form-group full-width">
+            <label>Café Images <span class="required-mark">*</span></label>
+            {{ image_formset.management_form }}
+            {% for form in image_formset.forms|slice:":5" %}
+              <div class="icon-input images">
+                <i class="fas fa-image"></i>
+                {{ form.image }}
+                {{ form.image.errors }}
+              </div>
+            {% endfor %}
+          </div>
+
+        </div>
+
+      <div class="form-section">
+        <div class="section-header">
+          <h2>Cafe Highlights</h2>
+          <div class="accent-line"></div>
+          <i class="fas fa-chevron-down toggle-icon"></i>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Café Highlights<span class="required-mark">*</span></label>
+            {{ highlight_formset.management_form }}
+            {% for form in highlight_formset.forms|slice:":6" %}
+              <div class="icon-input images">
+                <i class="fas fa-star"></i>
+                {{ form.highlight_text }}
+                {{ form.highlight_text.errors }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions Checkbox -->
+    <div class="form-group terms-checkbox">
+      <label>
+        {{ form.terms_accepted }} I agree to the
+        <a href="#" target="_blank">Terms and Conditions</a>
+      </label>
+      {{ form.terms_accepted.errors }}
+    </div>
+
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-check-circle"></i> Register Café
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script src="{% static "js/register-cafe.js" %}"></script>
+{% endblock js %} 
+

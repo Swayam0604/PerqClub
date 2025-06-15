@@ -1,0 +1,526 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block title %}PerqClub{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static "css/index.css" %}">
+{% endblock %} 
+{% block content %}
+
+<!-- Hero Section -->
+<section>
+  <div class="hero-container">
+    <div class="hero-slides">
+      <!-- Slide 1 -->
+      <div class="hero-slide active">
+        <img
+          src="{% static "img/cafe-hero-section-img-1.png" %}"
+          alt="Coffee shop interior"
+          class="slide-image"
+        />
+        <div class="overlay"></div>
+        <div class="slide-content">
+          <h1 class="slide-title">One Membership. 20+ Amazing Cafés.</h1>
+          <p class="slide-description">
+            Explore the best cafés in your city with one simple membership. Get
+            free coffee, exclusive discounts, and join a community of coffee
+            lovers.
+          </p>
+          <button class="slide-button">Get Your Membership ₹299</button>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="hero-slide">
+        <img
+          src="{% static 'img/cafe-hero-section-img-2.png' %}"
+          alt="Coffee
+        beans close-up"
+          class="slide-image"
+        />
+        <div class="overlay"></div>
+        <div class="slide-content">
+          <h1 class="slide-title">Artisan Coffee Every Day</h1>
+          <p class="slide-description">
+            Enjoy a free cup of premium coffee daily at our partner cafés.
+            Experience different roasts and brewing methods from top baristas.
+          </p>
+          <button class="slide-button">Start Your Journey</button>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="hero-slide">
+        <img
+          src="{% static 'img/cafe-hero-section-img-3.png' %}"
+          alt="People enjoying coffee"
+          class="slide-image"
+        />
+        <div class="overlay"></div>
+        <div class="slide-content">
+          <h1 class="slide-title">Join Our Coffee Community</h1>
+          <p class="slide-description">
+            Connect with fellow coffee enthusiasts, attend exclusive tasting
+            events, and learn from expert workshops. All included in your
+            membership.
+          </p>
+          <button class="slide-button">Become a Member</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-indicators">
+      <div class="indicator active" data-index="0"></div>
+      <div class="indicator" data-index="1"></div>
+      <div class="indicator" data-index="2"></div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+     <div class="section-header">
+      <h2 class="section-title">How it Works</h2>
+      <div class="accent-line"></div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Purchase Your Membership</h3>
+        <p>
+          Sign up for PerqClub membership for just ₹299 and get immediate access to
+          your digital membership card.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Visit Partner Cafés</h3>
+        <p>
+          Choose from our 20+ partner cafés across the city and redeem your
+          free coffee at each one.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Enjoy Exclusive Benefits</h3>
+        <p>
+          Get 10-15% off on food items, attend exclusive events, and earn
+          rewards as you explore.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+ <!-- Featured Cafes -->
+ <section class="featured-cafes" id="cafes">
+  <div class="container">
+    
+    <div class="section-header">
+      <h2 class="section-title">Cafe of The Week</h2>
+      <div class="accent-line"></div>
+    </div>
+
+    <div class="cafe-grid">
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-1-img-1.jpg"
+              alt="Bombay To Barcelona Library Cafe - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-1-img-2.jpg"
+              alt="Bombay To Barcelona Library Cafe - Coffee"
+              class="slide"
+            />
+            <img
+              src="../static/img/cafe-1-img-3.webp"
+              alt="Bombay To Barcelona Library Cafe - Books"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=1'">
+          <h3>Bombay To Barcelona Library Café.</h3>
+          <div class="cafe-location">Andheri East, Mumbai</div>
+          <div class="cafe-specialty-tag">
+            <u><b><i>Specialty:</i></b></u> Chocolate Crepes, Café Bonbon, Cold Coffee.
+          </div>
+        </div>
+      </div>
+    
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-2-img-1.jpg"
+              alt="The Coffee Nook - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-2-img-2.jpg"
+              alt="The Coffee Nook - Cold Brew"
+              class="slide"
+            />
+            <img
+              src="../static/img/cafe-2-img-3.jpg"
+              alt="The Coffee Nook - Seating"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=2'">
+          <h3>Kala Ghoda Café</h3>
+          <div class="cafe-location">Fort, Mumbai</div>
+          <div class="cafe-specialty-tag">
+            <u><b><i>Specialty:</i></b></u> Chocolate Shot, Almond Cake, Mint Tea.
+          </div>
+        </div>
+      </div>
+
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-3-img-1.jpg"
+              alt="Café Momentum - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-3-img-2.jpg"
+              alt="Café Momentum - Cappuccino"
+              class="slide"
+            />
+            <img
+              src="../static/img/cafe-3-img-3.jpg"
+              alt="Café Momentum - Outdoor"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=3'">
+          <h3>Poetry by Love & Cheesecake</h3>
+          <div class="cafe-location">Bandra west, Mumbai</div>
+          <div class="cafe-specialty-tag"><u><b><i>Specialty:</i></b></u> Ny style Cheesecake, Café Latte, Tiramisu Pastry.</div>
+        </div>
+      </div>
+
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-4-img-1.jpg"
+              alt="Morning Ritual - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-4-img-2.jpg"
+              alt="Morning Ritual - Espresso"
+              class="slide"
+            />
+            <img
+              src="../static/img/cafe-4-img-3.jpg"
+              alt="Morning Ritual - Pastries"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=4'">
+          <h3>Leaping Windows Café</h3>
+          <div class="cafe-location">Andheri West, Mumbai</div>
+          <div class="cafe-specialty-tag"><u><b><i>Specialty:</i></b></u> Vanilla Milkshake, Nutella Pancakes, Americano.</div>
+        </div>
+      </div>
+
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-5-img-1.jpg"
+              alt="The Roastery - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-5-img-2.jpg"
+              alt="The Roastery - House Blend"
+              class="slide"
+            />
+            <img
+              src="../static/img/cafe-5-img-3.jpg"
+              alt="The Roastery - Roasting"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=5'">
+          <h3>Bombay Coffee House</h3>
+          <div class="cafe-location">Bandra West, Mumbai</div>
+          <div class="cafe-specialty-tag"><u><b><i>Specialty:</i></b></u> Iced Caramel Coffee, Irish Cream Coffee, Mochaccino.</div>
+        </div>
+      </div>
+
+      <div class="cafe-card">
+        <div class="cafe-slideshow">
+          <div class="slides-container">
+            <img
+              src="../static/img/cafe-6-img-1.jpg"
+              alt="Bean & Beyond - Interior"
+              class="slide active"
+            />
+            <img
+              src="../static/img/cafe-6-img-2.jpg"
+              alt="Bean & Beyond - Latte Art"
+              class="slide"
+            />
+            <img
+              src="../static/img/Cafe-6-img-3.jpg"
+              alt="Bean & Beyond - Beans"
+              class="slide"
+            />
+          </div>
+          <div class="slideshow-nav">
+            <button class="prev-btn">&lsaquo;</button>
+            <div class="slide-dots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+            <button class="next-btn">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="cafe-details" onclick="window.location.href='../templates/cafedetails.html?id=6'">
+          <h3>Mockingbird Café</h3>
+          <div class="cafe-location">Churchgate, Mumbai</div>
+          <div class="cafe-specialty-tag"><u><b><i>Specialty:</i></b></u> Flourless Chocolate Fudge, Flowerpot Tiramisu, Irish Latte.</div>
+        </div>
+      </div>
+    </div>
+     <div class="view-all-button">
+      <a href="../templates/cafes.html" class="cta-button">View All Partner Cafés</a>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Membership Pricing</h2>
+      <div class="accent-line"></div>
+    <div class="pricing-container">
+      <div class="pricing-option">
+        <h3>Monthly PerqClub Membership</h3>
+        <div class="price">₹500 <span>/Month</span></div>
+        <p>Perfect for casual coffee lovers looking for great value.</p>
+        <a href="../templates/membership.html" class="cta-button"
+          >Get Your Membership</a
+        >
+      </div>
+
+      <div class="pricing-option">
+        <h3>Monthly PerqClub Membership</h3>
+        <div class="price">₹1000 <span>/Month</span></div>
+        <p>Unlock premium perks and bigger savings for coffee enthusiasts.</p>
+        <a href="../templates/membership.html" class="cta-button"
+          >Get Your Membership</a
+        >
+      </div>
+
+      <div class="pricing-option">
+        <h3>Monthly PerqClub Membership</h3>
+        <div class="price">₹1200 <span>/Month</span></div>
+        <p>The ultimate coffee experience with exclusive benefits.</p>
+        <a href="../templates/membership.html" class="cta-button"
+          >Get Your Membership</a
+        >
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits -->
+<section class="benefits" id="benefits">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Membership Benefits</h2>
+      <div class="accent-line"></div>
+    <div class="benefits-container">
+      <div class="benefit-column">
+        <div class="benefit-item">
+          <div class="benefit-icon">☕</div>
+          <div class="benefit-content">
+            <h3>Free Coffee</h3>
+            <p>
+              Get one free coffee at each of our 20+ partner cafés. Try new
+              places without the commitment!
+            </p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🍰</div>
+          <div class="benefit-content">
+            <h3>Food Discounts</h3>
+            <p>
+              Enjoy 10-15% off on food items at all partner cafés when you show
+              your BrewPass.
+            </p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🎁</div>
+          <div class="benefit-content">
+            <h3>Referral Rewards</h3>
+            <p>
+              Refer friends and both of you get an extra free coffee. Share the
+              love!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="benefit-column">
+        <div class="benefit-item">
+          <div class="benefit-icon">🎯</div>
+          <div class="benefit-content">
+            <h3>Loyalty Program</h3>
+            <p>
+              Visit 5 different cafés and earn a bonus reward like a free pastry
+              or specialty drink.
+            </p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🎭</div>
+          <div class="benefit-content">
+            <h3>Exclusive Events</h3>
+            <p>
+              Attend members-only events like barista workshops, coffee
+              tastings, and networking sessions.
+            </p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🤝</div>
+          <div class="benefit-content">
+            <h3>Partner Benefits</h3>
+            <p>
+              Enjoy special discounts at partner businesses including bookstores
+              and co-working spaces.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- App Section -->
+<section class="app-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Our PerqClub App</h2>
+      <div class="accent-line"></div>
+    <div class="app-content">
+      <div class="app-text">
+        <h2>Take BrewPass Everywhere You Go With our PerqClub App</h2>
+        <p>
+          With our digital PerqClub App, you can access your PerqClub membership
+          anytime, anywhere. No need for physical cards - just scan the QR code
+          at any partner café to redeem your free coffee and discounts.
+        </p>
+        <p>
+          Track your café visits, earn rewards, and discover new partner
+          locations all in one place. Making your coffee exploration simple!!
+        </p>
+        <a href="#contact" class="cta-button get-notified">Get Notified</a>
+      </div>
+      <div class="app-image">
+        <img
+          src="../static/img/cafe-app-coming-soon.jpg"
+          alt="PerqClub App"
+          class="phone-mockup"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">What Our Member's Say</h2>
+      <div class="accent-line"></div>
+    <div class="testimonial-container">
+      <p class="testimonial-text">
+        "PerqClub has completely changed how I experience coffee in the city.
+        I've discovered so many hidden gems that I would have never found
+        otherwise. The free coffees paid for the membership in just a few
+        visits, and the food discounts are an awesome bonus!"
+      </p>
+      <p class="testimonial-author">- Priya S., PerqClub Member</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <h2>Ready to Start Your Coffee Adventure?</h2>
+    <p>
+      Join PerqClub today and unlock 20+ free coffees plus exclusive benefits
+      for just ₹299/Month.
+    </p>
+    <a href="../templates/signup.html" class="cta-button">Sign Up Now</a>
+  </div>
+</section>
+{% endblock content %}
+{% block js %}
+<script src="{% static "js/index.js" %}"></script>
+{% endblock js %}

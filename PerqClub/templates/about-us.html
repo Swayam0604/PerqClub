@@ -1,0 +1,436 @@
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}PerqClub - About Us{% endblock %} 
+{% block css %}<link rel="stylesheet" href="
+{% static "css/about-us.css" %}" >{% endblock %} {% block content %}
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Where Coffee Meets Community</h1>
+        <p>
+          India's first café membership club making great coffee experiences
+          accessible to everyone
+        </p>
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Join PERQ Club</a>
+          <a href="#" class="btn btn-secondary">Partner With Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="our-story">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Story</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="story-content">
+        <div class="story-image">
+          <img
+            src="{% static 'img/coffee-about-us.png' %}"
+            alt="PERQ Club Founder"
+            class="rounded-image"
+          />
+        </div>
+        <div class="story-text">
+          <h3>Creating a Culture, Not Just Coffee</h3>
+          <p>
+            PERQ Club was born from a simple observation: young people in India
+            love café culture but find regular visits financially challenging.
+            Meanwhile, cafés struggle with inconsistent footfall, especially
+            during non-peak hours.
+          </p>
+          <p>
+            Our founder, Parthsarthisinh, passionate about youth brands and
+            community experiences, envisioned a solution that benefits both
+            sides - a membership model that makes café visits more affordable
+            while helping cafés increase their traffic.
+          </p>
+          <p>
+            Today, PERQ Club is growing into a cultural movement that connects
+            like-minded individuals through shared experiences in India's
+            vibrant café scene.
+          </p>
+          <blockquote>
+            "We're not just offering coffee. We're creating a cultural movement
+            that makes café experiences accessible to all."
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Problem & Solution Section -->
+  <section class="problem-solution">
+    <div class="container">
+      <div class="flex-container">
+        <div class="problem-box">
+          <div class="section-header">
+            <h2>The Problem</h2>
+            <div class="accent-line"></div>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-times-circle"></i>
+              <p>
+                Young people love café culture but avoid going regularly due to
+                high prices
+              </p>
+            </li>
+            <li>
+              <i class="fas fa-times-circle"></i>
+              <p>Cafés struggle with low footfall during non-peak hours</p>
+            </li>
+            <li>
+              <i class="fas fa-times-circle"></i>
+              <p>
+                No community-based membership model in India that helps both
+                sides win
+              </p>
+            </li>
+          </ul>
+          <div class="stat-highlight">
+            <i class="fas fa-chart-line"></i>
+            <p>
+              RedSeer reports that Gen Z in India is highly experience-focused
+              and willing to spend on lifestyle if there's value or exclusivity
+              attached.
+            </p>
+          </div>
+        </div>
+        <div class="solution-box">
+          <div class="section-header">
+            <h2>Our Solution</h2>
+            <div class="accent-line"></div>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p>
+                PERQ Club membership gives free coffee and exclusive discounts
+                at partner cafés
+              </p>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p>
+                Members save money while enjoying their favorite café
+                experiences
+              </p>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p>Partner cafés increase traffic, especially during low hours</p>
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i>
+              <p>Build a community of café enthusiasts across India</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Market Opportunity Section -->
+  <section class="market-opportunity">
+    <div class="container">
+      <div class="section-header">
+        <h2>Market Opportunity</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-coffee"></i>
+          </div>
+          <div class="stat-number">₹7,000+ Cr</div>
+          <div class="stat-desc">Projected Indian café market by 2027</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="stat-number">30+ Million</div>
+          <div class="stat-desc">
+            College students engaging in lifestyle spending
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="stat-number">Expanding</div>
+          <div class="stat-desc">
+            Café culture growing beyond metros into Tier-2 and Tier-3 cities
+          </div>
+        </div>
+      </div>
+      <div class="source-note">
+        <p>
+          Sources: Statista: India Café Market Value (2023), AISHE Report
+          2020-21
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Business Model Section -->
+  <section class="business-model">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Business Model</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="model-content">
+        <div class="model-image">
+          <img
+            src="{% static 'img/business-model.png' %}"
+            alt="PERQ Club Business Model"
+            class="rounded-image"
+          />
+        </div>
+        <div class="model-details">
+          <div class="model-item">
+            <div class="model-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <div class="model-text">
+              <h3>Membership Subscriptions</h3>
+              <p>Affordable monthly and quarterly plans for members</p>
+            </div>
+          </div>
+          <div class="model-item">
+            <div class="model-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <div class="model-text">
+              <h3>Café Partnerships</h3>
+              <p>
+                Commission or fees from partner cafés for increased customer
+                traffic
+              </p>
+            </div>
+          </div>
+          <div class="model-item">
+            <div class="model-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="model-text">
+              <h3>Future Growth</h3>
+              <p>
+                Event monetization, brand collaborations, and premium access
+                tiers
+              </p>
+            </div>
+          </div>
+          <div class="inspiration-note">
+            <p>
+              <strong>Inspiration:</strong> Similar models like Zomato Gold,
+              Times Prime, and Pret A Manger Coffee Subscription (UK) have
+              proven the demand for membership-driven experiences.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Traction Section -->
+  <section class="traction">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Traction</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="traction-content">
+        <div class="traction-stats">
+          <div class="traction-stat">
+            <div class="stat-number">70<span>%</span></div>
+            <div class="stat-desc">
+              of surveyed users visit cafés at least once a month
+            </div>
+          </div>
+          <div class="traction-stat">
+            <div class="stat-number">₹300-800</div>
+            <div class="stat-desc">Average spend per café visit</div>
+          </div>
+          <div class="traction-stat">
+            <div class="stat-number">₹199-299</div>
+            <div class="stat-desc">
+              Most acceptable monthly membership price range
+            </div>
+          </div>
+        </div>
+        <div class="traction-text">
+          <p>
+            While PERQ Club is still in its early stages, our survey data shows
+            promising demand. A significant number of respondents expressed
+            interest in a membership offering free coffee and discounts.
+          </p>
+          <p>
+            Many also value added perks like freebies, event access, and café
+            discovery through Instagram or word-of-mouth. These insights
+            validate the potential for a value-driven, subscription-based coffee
+            experience.
+          </p>
+          <div class="validation-note">
+            <i class="fas fa-lightbulb"></i>
+            <p>
+              Even 100–200 users in early tests is a strong signal of validation
+              in a new category.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Competitive Advantage Section -->
+  <section class="competitive-advantage">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Competitive Advantage</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="advantage-grid">
+        <div class="advantage-card">
+          <div class="advantage-icon">
+            <i class="fas fa-flag"></i>
+          </div>
+          <h3>First-Mover</h3>
+          <p>Pioneer in India's "café-as-a-club" concept</p>
+        </div>
+        <div class="advantage-card">
+          <div class="advantage-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Community Focus</h3>
+          <p>Strong community and youth branding potential</p>
+        </div>
+        <div class="advantage-card">
+          <div class="advantage-icon">
+            <i class="fas fa-hands-helping"></i>
+          </div>
+          <h3>Win-Win Model</h3>
+          <p>
+            Benefits for users (affordable lifestyle) and cafés (higher
+            footfall)
+          </p>
+        </div>
+        <div class="advantage-card">
+          <div class="advantage-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Habit-Building</h3>
+          <p>Designed for retention and long-term engagement</p>
+        </div>
+      </div>
+      <div class="advantage-note">
+        <p>
+          Models like ClassPass and Soho House show community-driven memberships
+          are sticky and premium-feeling when done right.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team">
+    <div class="container">
+      <div class="section-header">
+        <h2>Meet The Team</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="team-content">
+        <div class="team-image">
+          <img
+            src="{% static 'img/profile.jpg' %}"
+            alt="Parthsarthisinh - Founder"
+            class="rounded-image"
+          />
+        </div>
+        <div class="team-info">
+          <h3>Parthsarthisinh</h3>
+          <div class="team-role">Founder & CEO</div>
+          <p>
+            With a background in marketing, customer service, and brand
+            strategy, Parthsarthisinh brings a passion for youth brands,
+            community building, and exceptional consumer experiences.
+          </p>
+          <p>
+            His hustle mindset and clear vision for both technological and
+            offline execution make him uniquely positioned to lead PERQ Club
+            into India's rapidly evolving café landscape.
+          </p>
+          <div class="team-note">
+            <i class="fas fa-quote-left"></i>
+            <p>
+              "We invest in people more than the idea." Parthsarthisinh's story
+              and execution edge are at the heart of PERQ Club's journey.
+            </p>
+          </div>
+          <div class="team-social">
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision Section -->
+  <section class="vision">
+    <div class="container">
+      <div class="section-header light">
+        <h2>Our Vision</h2>
+        <div class="accent-line"></div>
+      </div>
+      <div class="vision-content">
+        <blockquote>
+          "We want to be the Soho House for Gen Z café lovers."
+        </blockquote>
+        <p>
+          Imagine walking into a café anywhere in India, showing your PERQ Club
+          pass, and being part of something cool, affordable, and exclusive.
+        </p>
+        <p>
+          We're not just offering coffee. We're creating a cultural movement
+          that combines consumer tribes, affordability, and lifestyle - a
+          powerful combination in India today.
+        </p>
+        <div class="vision-cta">
+          <a href="#" class="btn btn-primary">Join The Movement</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Join PERQ Club?</h2>
+        <p>
+          Get exclusive café discounts, free coffee, and become part of our
+          community.
+        </p>
+        <div class="cta-buttons">
+          <a href="../templates/signup.html" class="btn btn-primary"
+            >Sign Up Now</a
+          >
+          <a href="../templates/aboutus.html" class="btn btn-outline"
+            >Learn More</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+{% block js %}<script src="{% static 'js/about-us.js' %}"></script>{% endblock %}

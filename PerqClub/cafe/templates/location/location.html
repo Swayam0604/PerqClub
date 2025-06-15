@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}PerqClub - Cafes {{location.location_name}} {{name}} {% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static 'css/cafes.css' %}">{% endblock %}
+{% block content %}
+
+
+<section class="featured-cafes" id="cafes">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Cafes in : {{location.location_name}} {{name}}</h2>
+        <div class="accent-line"></div>
+    </div>
+      <div class="cafe-grid">
+     
+         {% for cafe in location.cafe_set.all %}
+         {% include 'cafescard.html' with c=cafe %}
+         {% empty %}
+            <h1>No Cafes Found in This Area</h1>
+         {% endfor %}
+      
+      </div>
+
+      <div class="section-header">
+          <h2 class="section-title">Other Nearby Cafes</h2>
+          <div class="accent-line"></div>
+          <div class="cafe-grid">
+        {% for cafe in cafes %}
+        {% include 'cafescard.html' with c=cafe %}
+        {% endfor %}
+      </div>
+    </div>
+   
+  </section>
+
+{% endblock %}
+{% block js %}<script src="{% static 'js/cafes.js' %}"></script>{% endblock %}
