@@ -18,7 +18,19 @@
                 <h1>No Cafes Found for "{{ query }}"</h1>
             {% endif %}
         </div>
+        <div class="section-header">
+            <h2 class="section-title">Other Nearby Cafes</h2>
+            <div class="accent-line"></div>
+            <div class="cafe-grid">
+                {% for cafe in other_cafes %}
+                   
+                    {% include 'cafescard.html' with c=cafe %}
+                {% endfor %}
+            </div>
+
     </div>
+
+    
 
 {% endblock content %}
 {% block js %}<script src="{% static 'js/cafes.js' %}"></script>{% endblock %}

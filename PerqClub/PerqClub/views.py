@@ -2,15 +2,26 @@ from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 from cafe.models import Cafe, CafeLocation
 
+from django.db.models import Q
 def home(request):
-    return render(request,'index.html',{'locations': CafeLocation.objects.all()})
+    context ={
+        'locations': CafeLocation.objects.all(),
+    }
+    return render(request,'index.html',context)
 
 def about_us(request):
-    return render(request,'about-us.html',{'locations': CafeLocation.objects.all()})
+    context ={
+        'locations': CafeLocation.objects.all(),
+    }
+    return render(request,'about-us.html',context)
 
 def sign_up(request):
     form = UserCreationForm()
-    return render(request,'sign-up.html',{'form':form,'locations': CafeLocation.objects.all()})
+    context ={
+        'form':form,
+        'locations': CafeLocation.objects.all()
+    }
+    return render(request,'sign-up.html',context)
 
 def log_in(request):
     form = UserCreationForm()
@@ -19,12 +30,14 @@ def log_in(request):
 def search(request):
     query = request.GET.get('q')
     if query:
-        locations = CafeLocation.objects.filter(location_name__icontains=query)
-        if not locations:
-            cafes = Cafe.objects.filter(cafe_name__icontains=query)
-        else:
-            cafes = Cafe.objects.all()
+        cafes = Cafe.objects.filter(cafe_name__icontains=query)
+
     else:
-        locations = CafeLocation.objects.all()
-    return render(request, 'search.html', {'locations': locations, 'cafes': cafes, 'query': query})
+        cafes = Cafe.objects.all()
+    
+    locations = CafeLocation.objects.all()
+
+    other_cafes = Cafe.objects.exclude(cafe_name__in=cafes.values_list('cafe_name', flat=True))
+
+    return render(request, 'search.html', {'locations': locations, 'cafes': cafes, 'query': query,'other_cafes': other_cafes})
 

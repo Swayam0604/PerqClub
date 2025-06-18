@@ -1781,7 +1781,7 @@ function renderNearbyCafes(cafe) {
       // Fallback if no images
       slideshowHtml = `
           <div class="cafe-card-img">
-            <img src="/api/placeholder/400/300" alt="${nearbyCafeData.name}">
+            <img src="" alt="${nearbyCafeData.name}">
           </div>
         `;
     }

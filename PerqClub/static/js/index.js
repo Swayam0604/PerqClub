@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Handle missing images with placeholders
   document.querySelectorAll(".slide").forEach((img) => {
     img.onerror = function () {
-      this.src = "/api/placeholder/400/300";
+      this.src = "";
       this.alt = "Cafe placeholder image";
     };
   });
