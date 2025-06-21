@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %} {% block title %}PerQClub - Registration Success
+{% endblock %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/register-cafe.css' %}" /> {# Re-using similar styles #}
+{% endblock css %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="form-container" style="text-align: center; padding: 50px;">
+        <div class="form-logo-container">
+            <div class="form-logo">
+                <i class="fas fa-check-circle" style="color: #4CAF50; font-size: 50px;"></i>
+            </div>
+        </div>
+        <h2>Membership successfully Purchased</h2>
+        <p style="font-size: 20px;margin:10px">Your membership has been successfully activated with PerQClub.</p>
+        <p style="font-size: 20px;margin:10px">Enjoy your perk and benefit at Our Partner cafes !!</p>
+        <a href="/" class="submit-btn" style="display: inline-block; margin-top: 20px; text-decoration:none;">
+            <i class="fas fa-home"></i> Go to Home
+        </a>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/register-cafe.js' %}"></script>
+{% endblock js %}

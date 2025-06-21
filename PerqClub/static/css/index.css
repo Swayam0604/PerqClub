@@ -313,11 +313,29 @@ nav ul li a:hover {
   background-color: #fff;
 }
 
+.section-header{
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2{
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
 .section-title {
   font-size: clamp(24px, 4vw, 36px);
   margin-bottom: 50px;
   position: relative;
   line-height: 1.2;
+}
+
+.accent-line{
+  width: 80px;
+  height: 4px;
+  background-color: var(--primary-light);
+  margin: 0 auto;
 }
 
 .steps {
@@ -385,28 +403,6 @@ body {
   padding: 50px 0;
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.section-header.light h2 {
-  color: var(--text-light);
-}
-
-.section-header h2 {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 1rem;
- 
-}
-
-.accent-line {
-  width: 80px;
-  height: 4px;
-  background-color: var(--primary-light);
-  margin: 0 auto;
-}
 
 /* Cafe grid styling */
 .cafe-grid {

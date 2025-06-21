@@ -131,7 +131,7 @@ def registration_success_view(request):
 
 # --- Class-Based Views for Review Functionality ---
 
-class CafeDetailWithReviewsView(LoginRequiredMixin, View):
+class CafeDetailWithReviewsView( View):
     """
     View for displaying a specific cafe's details and its reviews,
     as well as handling the submission of new reviews for that cafe.

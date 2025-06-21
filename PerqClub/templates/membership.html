@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}PerqClub - Memberships{% endblock %}
+{% block css %}<link rel="stylesheet" href="{% static "css/membership.css" %}">{% endblock css %}
+
+{% block content %}
+<div class="membership-plans">
+<div class="section-header">
+    <h2 class="section-title">Membership Plans</h2>
+    <div class="accent-line"></div>
+  </div>
+<div class="membership-container">
+    {% for plan in plans %}
+    <div class="membership-card {% if plan.is_most_popular %}best-value{% endif %}">
+        {% if plan.is_most_popular %}
+            <div class="popular-tag">Most Popular</div>
+        {% endif %}
+                <div class="card-content">
+                    <h2 class="plan-name">{{plan.name}}</h2>
+                    <div class="price">₹{{plan.price}} <span>/Month</span></div>
+                        <p class="description">{{plan.description}}</p>
+                    <div class="benefits">
+                        {% for feature in plan.features.all %}
+                        <div class="benefit-item">
+                            <span class="checkmark">✓</span>
+                            <span>{{feature.feature_text}}</span>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="action-btn-container">
+                        <button class="btn btn-filled action-btn" type="submit">Get Your Membership</button>
+                    </div>
+                </form>
+                {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}">Log in to Subscribe</a>
+                {% endif %}
+            </div>
+            {% endfor%}
+        </div>
+</div>
+<section class="testimonials" id="testimonials">
+      <div class="section-header">
+        <h2 class="section-title">What Our Member's Say</h2>
+        <div class="accent-line"></div>
+        </div>
+      <div class="testimonial-container">
+        <p class="testimonial-text">PerqClub offers exclusive benefits and discounts on a wide range of products and services.</p>
+            <p class="testimonial-text"> Our memberships are designed to provide you with the best value for your money, ensuring you get the most out of your shopping experience.</p>
+                <p class="testimonial-text">Join us today and start enjoying the perks of being a member!</p>
+                <p class="testimonial-text">Start enjoying your coffee experience like never before!</p>
+        <a href='#'><p class="testimonial-author">For any queries or assistance, feel free to contact our support team.</p></a>
+      </div>
+    
+  </section>
+
+        
+{% endblock content %}
+{% block js %}
+<script src="{% static 'js/membership.js' %}"></script>
+{% endblock js%}

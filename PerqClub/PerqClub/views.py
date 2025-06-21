@@ -41,3 +41,4 @@ def search(request):
 
     return render(request, 'search.html', {'locations': locations, 'cafes': cafes, 'query': query,'other_cafes': other_cafes})
 
+
