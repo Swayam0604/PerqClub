@@ -1,46 +1,47 @@
 {% extends "base.html" %} {% load static %} {% block title %}PerqClub -
 Cafes-details{% endblock %} {% block css %}
 <link rel="stylesheet" href="{% static 'css/cafes-details.css' %}" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
 <script src="https://cdn.tailwindcss.com"></script>
 {% endblock %} {% block content %}
 
 <!-- Main Content -->
 <main>
   <div class="container">
-        <!-- Carousel -->
-        <div class="carousel-container">
-          <div class="carousel">
-            {# Use cafe_images passed from the view and sort by 'order' field #}
-            {% with cafe_images|dictsort:"order" as sorted_images %}
-              {% for image in sorted_images %}
-                <div class="carousel-slide {% if forloop.first %}active{% endif %}"> {# Add active class to the first slide #}
-                  {# Dynamically set the image source using the .url attribute #}
-                  <img
-                    src="{{ image.image.url }}" {# Assuming your Image model has an 'image' field #}
-                    alt="{{ image.alt_text}}" {# Use alt_text if available, otherwise cafe name #}
-                  />
-                </div>
-              {% endfor %}
-            {% endwith %}
-          </div>
-          <button class="carousel-btn prev-btn">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button class="carousel-btn next-btn">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          <div class="carousel-dots">
-            {# Generate dots dynamically based on the number of images #}
-            {% with cafe_images|dictsort:"order" as sorted_images %}
-              {% for image in sorted_images %}
-                  <span class="dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></span> {# Add active class to the first dot #}
-              {% endfor %}
-            {% endwith %}
-          </div>
+    <!-- Carousel -->
+    <div class="carousel-container">
+      <div class="carousel">
+        {% with cafe_images|dictsort:"order" as sorted_images %}
+        {% for image in sorted_images %}
+        <div class="carousel-slide {% if forloop.first %}active{% endif %}">
+          <img src="{{ image.image.url }}" alt="{{ image.alt_text }}" />
         </div>
-    
+        {% endfor %} {% endwith %}
+      </div>
+      <button class="carousel-btn prev-btn">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="carousel-btn next-btn">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <div class="carousel-dots">
+        {% with cafe_images|dictsort:"order" as sorted_images %} 
+        {% for image in sorted_images %}
+        <span
+          class="dot {% if forloop.first %}active{% endif %}"
+          data-index="{{ forloop.counter0 }}"
+        ></span>
+        {% endfor %} {% endwith %}
+      </div>
+    </div>
 
     <!-- Cafe Information -->
     <div class="cafe-info">
@@ -64,30 +65,25 @@ Cafes-details{% endblock %} {% block css %}
         </div>
 
         <div class="cafe-description">
-          <p>
-            {{cafe.cafe_description|linebreaksbr}}
-          </p>
-         
+          <p>{{cafe.cafe_description|linebreaksbr}}</p>
         </div>
 
         <div class="cafe-highlights">
           <div class="highlights-title">Highlights</div>
           {% if cafe_highlights %}
-            <div class="highlights-list" id="highlights-list">
-              {% for highlight in cafe_highlights %}
-                <div class="highlight-item">
-                  {% if highlight.icon_class %}
-                    <i class="fas {{ highlight.icon_class }}"></i>
-                  {% endif %}
-                  {{ highlight.highlight_text }}
-                </div>
-              {% endfor %}
+          <div class="highlights-list" id="highlights-list">
+            {% for highlight in cafe_highlights %}
+            <div class="highlight-item">
+              {% if highlight.icon_class %}
+              <i class="fas {{ highlight.icon_class }}"></i>
+              {% endif %} {{ highlight.highlight_text }}
             </div>
+            {% endfor %}
+          </div>
           {% else %}
-            <p>No highlights available for this café.</p>
+          <p>No highlights available for this café.</p>
           {% endif %}
         </div>
-        
       </div>
 
       <div class="map-booking">
@@ -101,39 +97,69 @@ Cafes-details{% endblock %} {% block css %}
           ></iframe>
         </div>
         <div class="booking-container">
+          {% if user.is_authenticated %} 
+          {% if not user.is_staff and not user.is_superuser %}
           <div class="booking-title">Book a Table</div>
-          <div class="booking-options">
-            <div class="date-select">
-              <label class="booking-label">Date</label>
-              <input type="date" class="booking-input" />
-            </div>
-            <div class="time-select">
-              <label class="booking-label">Time</label>
-              <select class="booking-input">
-                <option>9:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>1:00 PM</option>
-                <option>2:00 PM</option>
-                <option>3:00 PM</option>
-                <option>4:00 PM</option>
-                <option>5:00 PM</option>
-                <option>6:00 PM</option>
-              </select>
-            </div>
-          </div>
-          <div class="people-select">
-            <label class="booking-label">People</label>
-            <select class="booking-input">
-              <option>1 Person</option>
-              <option>2 People</option>
-              <option>3 People</option>
-              <option>4 People</option>
-              <option>5+ People</option>
+          <a id="booking-form-anchor"></a>
+          <form method="post" action="" id="booking-form">
+            {% csrf_token %}
+            <label for="id_date" class="booking-label">Date</label>
+            {{ booking_form.date }}
+            {% if booking_form.date.errors %}
+            <div class="form-error text-red-500 text-sm">{{ booking_form.date.errors.0 }}</div>
+            <script>
+            document.getElementById('booking-form').scrollIntoView({behavior: "auto"});
+            </script>
+            {% endif %}
+            
+            <label for="id_time" class="booking-label">Time</label>
+            <select name="time" id="id_time" class="booking-input">
+              {% for slot in time_slots %}
+              <option value="{{ slot|time:'H:i:s' }}">
+                {{ slot|time:"g:i A" }}
+              </option>
+              {% endfor %}
             </select>
-          </div>
-          <button class="btn btn-primary btn-full">Reserve Table</button>
+            <label for="id_people" class="booking-label"
+              >Number of People</label
+            >
+            {{ booking_form.people }}
+            <button
+              type="submit"
+              name="submit_booking"
+              class="btn btn-primary btn-full"
+            >
+              Reserve Table
+            </button>
+          </form>
+          <a
+            href="{% url 'booking_list' %}"
+            class="btn btn-secondary btn-full mt-2"
+          >
+            See All Bookings
+          </a>
+          {% else %}
+          <div class="booking-title">Bookings</div>
+          <a
+            href="{% url 'cafe_bookings' cafe.id %}"
+            class="btn btn-primary btn-full mt-2"
+          >
+            Manage Bookings
+          </a>
+          <a
+            href="{% url 'cafe_bookings' cafe.id %}"
+            class="btn btn-secondary btn-full mt-2"
+          >
+            See All Bookings
+          </a>
+          <!-- Add more admin/staff options as needed -->
+          {% endif %} {% else %}
+          <p class="text-amber-700 font-semibold mt-2">
+            Please
+            <a href="{% url 'login_user' %}" class="underline">log in</a> to
+            reserve a table.
+          </p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -141,251 +167,314 @@ Cafes-details{% endblock %} {% block css %}
     <!-- Reviews Section -->
     <section class="reviews-section">
       <div class="review-title" style="">
-      <h2 class="section-title" >
-        <i class="fas fa-comment"></i> Customer Reviews
-      </h2>
-      <div class="see-more-reviews">
-        <!-- Toggle Button -->
-    <button id="toggleReviewFormBtn" class=" write-a-review py-3 px-6 bg-amber-600 text-white font-semibold rounded-xl shadow-lg hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg">
-        Write a review about cafe
-    </button>
+        <h2 class="section-title">
+          <i class="fas fa-comment"></i> Customer Reviews
+        </h2>
+        <div class="see-more-reviews">
+          <!-- Toggle Button -->
+          <button
+            id="toggleReviewFormBtn"
+            class="write-a-review py-3 px-6 bg-amber-600 text-white font-semibold rounded-xl shadow-lg hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg"
+          >
+            Write a review about cafe
+          </button>
 
-    <!-- Review Form Container (initially hidden) -->
-    
+          <!-- Review Form Container (initially hidden) -->
 
-        <a href="{% url 'cafe_reviews' cafe.id %}" class="btn btn-primary see-all-reviews">See All Reviews</a>
+          <a
+            href="{% url 'cafe_reviews' cafe.id %}"
+            class="btn btn-primary see-all-reviews"
+            >See All Reviews</a
+          >
+        </div>
       </div>
-    </div>
-  
-    <div class="container">
-      <div class="reviews-container">
-        <div class="review-card">
-          <div class="review-header">
-            <div class="reviewer-img">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                <path
-                  fill="#7d4f2a"
-                  d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                />
-              </svg>
+
+      <div class="container">
+        <div class="reviews-container">
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-img">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path
+                    fill="#7d4f2a"
+                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
+                  />
+                </svg>
+              </div>
+              <div class="reviewer-info">
+                <h4><!--Priya Sharma--></h4>
+                <div class="review-date"><!--2 days ago--></div>
+              </div>
             </div>
-            <div class="reviewer-info">
-              <h4><!--Priya Sharma--></h4>
-              <div class="review-date"><!--2 days ago--></div>
-            </div>
-          </div>
-          <div class="review-rating">
-            <!-- <i class="fas fa-star"></i>
+            <div class="review-rating">
+              <!-- <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i> -->
+            </div>
+            <p class="review-text">
+              <!--Absolutely love this place! The ambiance is perfect for working or casual catch-ups. Their cappuccino is to die for, and don't even get me started on their almond croissants. The staff is friendly, and with my membership card, I got a nice discount. Will definitely be back!-->
+            </p>
+            <div class="review-actions">
+              <button class="helpful-btn">
+                <i class="far fa-thumbs-up"></i
+                ><!-- Helpful (15)-->
+              </button>
+              <button class="helpful-btn">
+                <i class="far fa-comment"></i>
+                <!--Reply-->
+              </button>
+            </div>
           </div>
-          <p class="review-text">
-            <!--Absolutely love this place! The ambiance is perfect for working or casual catch-ups. Their cappuccino is to die for, and don't even get me started on their almond croissants. The staff is friendly, and with my membership card, I got a nice discount. Will definitely be back!-->
-          </p>
-          <div class="review-actions">
-            <button class="helpful-btn">
-              <i class="far fa-thumbs-up"></i
-              ><!-- Helpful (15)-->
-            </button>
-            <button class="helpful-btn">
-              <i class="far fa-comment"></i>
-              <!--Reply-->
-            </button>
-          </div>
-        </div>
 
-        <div class="review-card">
-          <div class="review-header">
-            <div class="reviewer-img">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                <path
-                  fill="#7d4f2a"
-                  d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                />
-              </svg>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-img">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path
+                    fill="#7d4f2a"
+                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
+                  />
+                </svg>
+              </div>
+              <div class="reviewer-info">
+                <h4><!--Rohit Patel--></h4>
+                <div class="review-date"><!--1 week ago--></div>
+              </div>
             </div>
-            <div class="reviewer-info">
-              <h4><!--Rohit Patel--></h4>
-              <div class="review-date"><!--1 week ago--></div>
-            </div>
-          </div>
-          <div class="review-rating">
-            <!-- <i class="fas fa-star"></i>
+            <div class="review-rating">
+              <!-- <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="far fa-star"></i> -->
+            </div>
+            <p class="review-text">
+              <!--Great coffee but can get a bit crowded during peak hours. I used my membership card to get a free coffee and it was a smooth experience. The baristas really know their craft. Would recommend trying their pour-over - it's exceptional!-->
+            </p>
+            <div class="review-actions">
+              <button class="helpful-btn">
+                <i class="far fa-thumbs-up"></i
+                ><!-- Helpful (7)-->
+              </button>
+              <button class="helpful-btn">
+                <i class="far fa-comment"></i>
+                <!--Reply-->
+              </button>
+            </div>
           </div>
-          <p class="review-text">
-            <!--Great coffee but can get a bit crowded during peak hours. I used my membership card to get a free coffee and it was a smooth experience. The baristas really know their craft. Would recommend trying their pour-over - it's exceptional!-->
-          </p>
-          <div class="review-actions">
-            <button class="helpful-btn">
-              <i class="far fa-thumbs-up"></i
-              ><!-- Helpful (7)-->
-            </button>
-            <button class="helpful-btn">
-              <i class="far fa-comment"></i>
-              <!--Reply-->
-            </button>
-          </div>
-        </div>
 
-        <div class="review-card">
-          <div class="review-header">
-            <div class="reviewer-img">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                <path
-                  fill="#7d4f2a"
-                  d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                />
-              </svg>
+          <div class="review-card">
+            <div class="review-header">
+              <div class="reviewer-img">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path
+                    fill="#7d4f2a"
+                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
+                  />
+                </svg>
+              </div>
+              <div class="reviewer-info">
+                <h4><!--Aishwarya Singh--></h4>
+                <div class="review-date"><!--2 weeks ago--></div>
+              </div>
             </div>
-            <div class="reviewer-info">
-              <h4><!--Aishwarya Singh--></h4>
-              <div class="review-date"><!--2 weeks ago--></div>
-            </div>
-          </div>
-          <div class="review-rating">
-            <!-- <i class="fas fa-star"></i>
+            <div class="review-rating">
+              <!-- <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star-half-alt"></i>
                             <i class="far fa-star"></i> -->
-          </div>
-          <p class="review-text">
-            <!--I love the vibe here! It's a perfect spot for meeting clients or getting some work done. The coffee is excellent, and they have good food options too. WiFi can be a bit spotty during busy hours, but overall a great café. The membership discount makes it even better value.-->
-          </p>
-          <div class="review-actions">
-            <button class="helpful-btn">
-              <i class="far fa-thumbs-up"></i>
-              <!--Helpful (3)-->
-            </button>
-            <button class="helpful-btn">
-              <i class="far fa-comment"></i>
-              <!--Reply-->
-            </button>
+            </div>
+            <p class="review-text">
+              <!--I love the vibe here! It's a perfect spot for meeting clients or getting some work done. The coffee is excellent, and they have good food options too. WiFi can be a bit spotty during busy hours, but overall a great café. The membership discount makes it even better value.-->
+            </p>
+            <div class="review-actions">
+              <button class="helpful-btn">
+                <i class="far fa-thumbs-up"></i>
+                <!--Helpful (3)-->
+              </button>
+              <button class="helpful-btn">
+                <i class="far fa-comment"></i>
+                <!--Reply-->
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-      <div id="reviewFormContainer" class="hidden mt-8 p-8 bg-amber-50 rounded-2xl shadow-xl w-full mx-auto border border-amber-200">
-        <h2 class="text-3xl font-bold mb-8 text-amber-900 text-center">Write a review</h2>
-        <form class="space-y-6"  method="post" action="{% url 'cafe_detail' cafe.id %}">
+      <div
+        id="reviewFormContainer"
+        class="hidden mt-8 p-8 bg-amber-50 rounded-2xl shadow-xl w-full mx-auto border border-amber-200"
+      >
+        <h2 class="text-3xl font-bold mb-8 text-amber-900 text-center">
+          Write a review
+        </h2>
+        <form
+          class="space-y-6"
+          method="post"
+          action="{% url 'cafe_detail' cafe.id %}"
+        >
           {% csrf_token %}
-            <!-- Name section removed -->
-            <div>
-                <label class="block text-xl font-medium text-amber-800 mb-2">Rating :</label>
-                <div id="starRating" class="flex items-center space-x-1">
-                    <!-- SVG Stars - Initially gray-300 -->
-                    <svg class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150" fill="currentColor" viewBox="0 0 20 20" data-rating="1">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"></path>
-                    </svg>
-                    <svg class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150" fill="currentColor" viewBox="0 0 20 20" data-rating="2">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"></path>
-                    </svg>
-                    <svg class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150" fill="currentColor" viewBox="0 0 20 20" data-rating="3">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"></path>
-                    </svg>
-                    <svg class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150" fill="currentColor" viewBox="0 0 20 20" data-rating="4">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"></path>
-                    </svg>
-                    <svg class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150" fill="currentColor" viewBox="0 0 20 20" data-rating="5">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"></path>
-                    </svg>
-                </div>
-                <!-- Hidden input to store the selected rating value -->
-                <input type="hidden" id="selectedRating" name="rating" value="0">
+          <!-- Name section removed -->
+          <div>
+            <label class="block text-xl font-medium text-amber-800 mb-2"
+              >Rating :</label
+            >
+            <div id="starRating" class="flex items-center space-x-1">
+              <!-- SVG Stars - Initially gray-300 -->
+              <svg
+                class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                data-rating="1"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"
+                ></path>
+              </svg>
+              <svg
+                class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                data-rating="2"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"
+                ></path>
+              </svg>
+              <svg
+                class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                data-rating="3"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"
+                ></path>
+              </svg>
+              <svg
+                class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                data-rating="4"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"
+                ></path>
+              </svg>
+              <svg
+                class="star-icon w-8 h-8 cursor-pointer text-gray-300 transition-colors duration-150"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                data-rating="5"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.951a1 1 0 00.95.69h4.153c.969 0 1.371 1.24.588 1.81l-3.352 2.435a1 1 0 00-.364 1.118l1.287 3.951c.3.921-.755 1.688-1.54 1.118l-3.352-2.435a1 1 0 00-1.176 0l-3.352 2.435c-.784.57-1.838-.197-1.539-1.118l1.287-3.951a1 1 0 00-.364-1.118L2.98 9.379c-.783-.57-.38-1.81.588-1.81h4.153a1 1 0 00.95-.69l1.286-3.951z"
+                ></path>
+              </svg>
             </div>
-            <div>
-                <label for="comment" class="block text-xl font-medium text-amber-800 mb-2">Comment :</label>
-                <textarea id="comment" name="comment" rows="6" placeholder="Share your experience..."
-                          class="mt-1 block w-full px-4 py-3 border border-amber-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base bg-white text-amber-900 placeholder-amber-400 resize-y"></textarea>
-            </div>
-            <button type="submit" class="w-full py-3 px-6 bg-amber-700 text-white font-semibold rounded-lg shadow-md hover:bg-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg">
-                Submit Review
-            </button>
+            <!-- Hidden input to store the selected rating value -->
+            <input type="hidden" id="selectedRating" name="rating" value="0" />
+          </div>
+          <div>
+            <label
+              for="comment"
+              class="block text-xl font-medium text-amber-800 mb-2"
+              >Comment :</label
+            >
+            <textarea
+              id="comment"
+              name="comment"
+              rows="6"
+              placeholder="Share your experience..."
+              class="mt-1 block w-full px-4 py-3 border border-amber-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-base bg-white text-amber-900 placeholder-amber-400 resize-y"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            name="submit_review"
+            class="w-full py-3 px-6 bg-amber-700 text-white font-semibold rounded-lg shadow-md hover:bg-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg"
+          >
+            Submit Review
+          </button>
         </form>
-    </div>
-
+      </div>
     </section>
 
     <!-- Similar Cafes Section -->
     <section class="similar-cafes-section">
       <h2 class="section-title"><i class="fas fa-coffee"></i> Cafés Nearby</h2>
       <div class="container">
-      <div class="cafes-container">
-        <div class="cafe-card">
-          <div class="cafe-card-img">
-            <img src="" alt="Cafe" />
-          </div>
-          <div class="cafe-card-content">
-            <h3 class="cafe-card-title"><!--The Coffee Library--></h3>
-            <div class="cafe-card-meta">
-              <div class="cafe-card-rating">
-                <i class="fas fa-star"></i>
-                <span><!--4.3--></span>
-              </div>
-              <div class="cafe-card-distance"><!--0.5 km away--></div>
+        <div class="cafes-container">
+          <div class="cafe-card">
+            <div class="cafe-card-img">
+              <img src="" alt="Cafe" />
             </div>
-            <p class="cafe-card-description">
-              <!--A quiet space with books and great coffee. Perfect for the literary-minded coffee enthusiasts.-->
-            </p>
-            <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            <div class="cafe-card-content">
+              <h3 class="cafe-card-title"><!--The Coffee Library--></h3>
+              <div class="cafe-card-meta">
+                <div class="cafe-card-rating">
+                  <i class="fas fa-star"></i>
+                  <span><!--4.3--></span>
+                </div>
+                <div class="cafe-card-distance"><!--0.5 km away--></div>
+              </div>
+              <p class="cafe-card-description">
+                <!--A quiet space with books and great coffee. Perfect for the literary-minded coffee enthusiasts.-->
+              </p>
+              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            </div>
           </div>
-        </div>
 
-        <div class="cafe-card">
-          <div class="cafe-card-img">
-            <img src="" alt="Cafe" />
-          </div>
-          <div class="cafe-card-content">
-            <h3 class="cafe-card-title"><!--Brew & Bake--></h3>
-            <div class="cafe-card-meta">
-              <div class="cafe-card-rating">
-                <i class="fas fa-star"></i>
-                <span><!--4.6--></span>
-              </div>
-              <div class="cafe-card-distance"><!--0.8 km away--></div>
+          <div class="cafe-card">
+            <div class="cafe-card-img">
+              <img src="" alt="Cafe" />
             </div>
-            <p class="cafe-card-description">
-              <!--Famous for their in-house bakery and specialty coffee beans from around the world.-->
-            </p>
-            <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            <div class="cafe-card-content">
+              <h3 class="cafe-card-title"><!--Brew & Bake--></h3>
+              <div class="cafe-card-meta">
+                <div class="cafe-card-rating">
+                  <i class="fas fa-star"></i>
+                  <span><!--4.6--></span>
+                </div>
+                <div class="cafe-card-distance"><!--0.8 km away--></div>
+              </div>
+              <p class="cafe-card-description">
+                <!--Famous for their in-house bakery and specialty coffee beans from around the world.-->
+              </p>
+              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            </div>
           </div>
-        </div>
 
-        <div class="cafe-card">
-          <div class="cafe-card-img">
-            <img src="" alt="Cafe" />
-          </div>
-          <div class="cafe-card-content">
-            <h3 class="cafe-card-title"><!--Urbdan Roasters--></h3>
-            <div class="cafe-card-meta">
-              <div class="cafe-card-rating">
-                <i class="fas fa-star"></i>
-                <span><!--4.4--></span>
-              </div>
-              <div class="cafe-card-distance"><!--1.2 km away--></div>
+          <div class="cafe-card">
+            <div class="cafe-card-img">
+              <img src="" alt="Cafe" />
             </div>
-            <p class="cafe-card-description">
-              <!--Modern café with a focus on single-origin coffees and contemporary food offerings.-->
-            </p>
-            <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            <div class="cafe-card-content">
+              <h3 class="cafe-card-title"><!--Urbdan Roasters--></h3>
+              <div class="cafe-card-meta">
+                <div class="cafe-card-rating">
+                  <i class="fas fa-star"></i>
+                  <span><!--4.4--></span>
+                </div>
+                <div class="cafe-card-distance"><!--1.2 km away--></div>
+              </div>
+              <p class="cafe-card-description">
+                <!--Modern café with a focus on single-origin coffees and contemporary food offerings.-->
+              </p>
+              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </section>
   </div>
 </main>
-{% endblock content %}
-{% block js %}
+{% endblock content %} {% block js %}
 <script src="{% static 'js/cafes-details.js' %}"></script>
 {% endblock js %}

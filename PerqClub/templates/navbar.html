@@ -6,7 +6,7 @@
  <header>
    <div class="container" style="max-width: 1400px;">
      <div class="header-content">
-       <a href="../templates/index.html"><div class="logo">Per<span>q</span>Club</div></a>
+       <a href="{% url 'home' %}"><div class="logo">Per<span>q</span>Club</div></a>
        <button
          class="mobile-menu-toggle"
          id="menuToggle"
@@ -49,8 +49,16 @@
            <li><a href="{% url 'cafe_list' %}">Cafés</a></li>
            <li><a href="{% url 'membership' %}">Memberships</a></li>
            <li><a href="{% url 'About-us' %}">About Us</a></li>
-           <li><a href="../templates/login.html" class="cta-button-2" >Log In</a></li>
-           <li><a href="{% url 'register_cafe' %}" class="cta-button Join-now">Join Now</a></li>
+           {% if not user.is_authenticated %}
+    <li><a href="{% url 'login_user' %}" class="cta-button-2">Log In</a></li>
+    <li><a href="{% url 'register_user' %}" class="cta-button-2">Sign Up</a></li>
+{% elif user.is_staff or user.is_superuser %}
+    <li><a href="{% url 'register_cafe' %}" class="cta-button Join-now">Register a Cafe</a></li>
+    <li><a href="{% url 'logout_user' %}" class="cta-button-2">Log Out</a></li>
+{% else %}
+    <li><a href="#" class="cta-button-2">{{ user.username }}</a></li>
+    <li><a href="{% url 'logout_user' %}" class="cta-button-2">Log Out</a></li>
+{% endif %}
          </ul>
        </nav>
      </div>

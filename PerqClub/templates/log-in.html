@@ -18,34 +18,42 @@
             </div>
             
             <div class="form-container">
-                <form class="form" id="login-form" action="/login" method="POST" autocomplete="off">
-                    <div class="input-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" name="email" required autocomplete="off"> 
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" name="password" required>
-                    </div>
-                    
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="remember-me" name="remember_me">
-                        <label for="remember-me">Remember me</label>
-                    </div>
-                    
-                    <a href="/forgot-password" class="forgot-password">Forgot your password?</a>
-                    
-                    <button type="submit" class="submit-btn">Login</button>
-                    <button type="button" class="submit-btn" onclick="window.location.href='/signup'">Create new account</button>
-                    
-                    <div class="divider"><span>OR</span></div>
-                    
-                    <div class="social-login">
-                        <button type="button" class="social-btn" onclick="window.location.href='/login/google'">Google</button>
-                        <button type="button" class="social-btn" onclick="window.location.href='/login/facebook'">Facebook</button>
-                    </div>
-                </form>
+<form class="form" id="login-form" action="{% url 'login_user' %}" method="POST" autocomplete="off">
+    {% csrf_token %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="input-group">
+        <label for="login-email">Username / Email / Phone No.</label>
+        <input type="text" id="login-email" name="username" required autocomplete="off">
+    </div>
+    
+    <div class="input-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" name="password" required>
+    </div>
+    
+    <div class="checkbox-group">
+        <input type="checkbox" id="remember-me" name="remember_me">
+        <label for="remember-me">Remember me</label>
+    </div>
+    
+    <a href="/forgot-password" class="forgot-password">Forgot your password?</a>
+    
+    <button type="submit" class="submit-btn">Login</button>
+    <a href="{% url 'register_user' %}" class="submit-btn" style="text-decoration: none; display: inline-block; text-align: center;">Create new account</a>
+    
+    <div class="divider"><span>OR</span></div>
+    
+    <div class="social-login">
+        <button type="button" class="social-btn" onclick="window.location.href='/login/google'">Google</button>
+        <button type="button" class="social-btn" onclick="window.location.href='/login/facebook'">Facebook</button>
+    </div>
+</form>
             </div>
         </div>
     </div>

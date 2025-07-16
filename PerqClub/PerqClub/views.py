@@ -15,17 +15,7 @@ def about_us(request):
     }
     return render(request,'about-us.html',context)
 
-def sign_up(request):
-    form = UserCreationForm()
-    context ={
-        'form':form,
-        'locations': CafeLocation.objects.all()
-    }
-    return render(request,'sign-up.html',context)
 
-def log_in(request):
-    form = UserCreationForm()
-    return render(request,'log-in.html',{'form':form})
 
 def search(request):
     query = request.GET.get('q')

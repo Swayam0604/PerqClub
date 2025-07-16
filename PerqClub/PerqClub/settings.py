@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'membership',
     "crispy_forms",
     "crispy_bootstrap5",
+    "user",
+    "booking",
 ]
 
 MIDDLEWARE = [
@@ -106,6 +108,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'user.userbackend.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -142,3 +149,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+AUTH_USER_MODEL = 'user.CustomUser' 
+
+# EMAIL SETTINGS
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'swayamharawade0604@gmail.com'
+EMAIL_HOST_PASSWORD = 'invg mpog klbo zcsl'  # Not your Gmail password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

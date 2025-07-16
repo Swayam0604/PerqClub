@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% load static %} {% block title %}PerQClub - SignUp
+{% endblock %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/sign-up.css' %}" />
+{% endblock css %} {% block content %}
+<form method="post">
+    {% csrf_token %}
+    <label for="otp">Enter OTP sent to your phone:</label>
+    <input type="text" name="otp" required>
+    <button class="submit-btn" type="submit">Verify</button>
+</form>
+
+{% endblock content %}

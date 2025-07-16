@@ -18,6 +18,20 @@ from django.views import View
 from cafe.models import CafeLocation
 from django.views.generic.detail import DetailView
 
+from datetime import datetime, timedelta
+from booking.forms import BookingForm
+from django.contrib import messages
+from datetime import date
+
+def get_time_slots(opening, closing, interval=60):
+    slots = []
+    current = datetime.combine(datetime.today(), opening)
+    end = datetime.combine(datetime.today(), closing)
+    while current < end:
+        slots.append(current.time())
+        current += timedelta(minutes=interval)
+    return slots
+
 def cafe(request):
     cafes=Cafe.objects.all()
 
@@ -29,27 +43,6 @@ def cafe(request):
 # Create your views here.
 # Assuming you're getting a single cafe instance
 
-
-# def cafe_detail_view(request, pk):
-#     cafe = Cafe.objects.get(pk=pk)
-#     # Now you can get all images related to this cafe
-#     # reviews = cafe.reviews.order_by('-date_posted')  # related_name from model
-#     cafe_images = cafe.images.all() # Using the related_name 'images'
-#     cafe_highlights = cafe.highlights.all()  # related_name from the model
-#     context = {
-#         'cafe': cafe,
-#         'cafe_images': cafe_images,
-#         'cafe_highlights': cafe_highlights,
-        
-#     }
-#     return render(request, 'cafe-details.html', context)
-
-# def cafereview(request):
-#     return render(request,"reviews.html")
-
-
-##
-# cafe_app/views.py
 
 
 
@@ -109,7 +102,6 @@ def register_cafe_view(request):
             # The template will automatically display specific field errors
 
     else: # GET request, display empty forms
-        print("Hrllo")
         cafe_form = CafeForm()
         image_formset = CafeImageFormSet(prefix='images')
         highlight_formset = CafeHighlightFormSet(prefix='highlights')
@@ -157,6 +149,10 @@ class CafeDetailWithReviewsView( View):
         # Initialize an empty form for new review submission.
         form = CafeReviewForm()
         
+        # Assuming 'cafe' is your Cafe instance
+        booking_form = BookingForm()
+        time_slots = get_time_slots(cafe.opening_hours, cafe.closing_hours, interval=60)  # interval in minutes
+
         context = {
             'cafe': cafe,             # The specific cafe object
             'reviews': reviews,       # Queryset of reviews for this cafe
@@ -164,6 +160,9 @@ class CafeDetailWithReviewsView( View):
             'cafe_images': cafe_images,     # Queryset of images for this cafe
             'cafe_highlights': cafe_highlights, # Queryset of highlights for this cafe
             'locations': CafeLocation.objects.all(), # Pass all locations for navigation
+            'booking_form': booking_form,
+            'time_slots': time_slots,
+            'today': date.today().isoformat(),
         }
         # Render the template with the gathered context data.
         return render(request, self.template_name, context)
@@ -175,39 +174,58 @@ class CafeDetailWithReviewsView( View):
         cafe = get_object_or_404(Cafe, id=pk) # Use id=pk for lookup
         # Create a form instance and populate it with data from the POST request.
         form = CafeReviewForm(request.POST)
+        booking_form = BookingForm(request.POST)
+        time_slots = get_time_slots(cafe.opening_hours, cafe.closing_hours, interval=60)  # interval in minutes
 
-        if form.is_valid():
-            # If the form data is valid, save the review but don't commit it to the database yet.
-            review = form.save(commit=False)
-            
-            # Assign the current Cafe instance to the review.
-            review.cafe = cafe
-            # Assign the currently logged-in user to the review.
-            review.user = request.user 
-            
-            # Now, save the review to the database.
-            review.save()
-            
-            # Redirect back to the same cafe's review page after successful submission
-            return redirect('cafe_detail', pk=cafe.id) # Use pk for redirect argument
-        else:
-            # If the form data is NOT valid, re-render the page with the form errors.
-            # IMPORTANT: Print form errors to your console to debug why validation failed.
-            print("Form errors:", form.errors)
-            reviews = CafeReview.objects.filter(cafe=cafe).order_by('-date_posted')
-            
-            # --- ADDED: Re-fetch cafe images and highlights on form error ---
-            cafe_images = cafe.images.all()
-            cafe_highlights = cafe.highlights.all()
+        
+        # Check which form was submitted (you can use a hidden field or button name in your template)
+        if 'submit_review' in request.POST:
+            if not request.user.is_authenticated:
+                messages.error(request, "Please log in to submit a review.")
+                return redirect('login_user')
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.cafe = cafe
+                review.user = request.user
+                review.save()
+                messages.success(request, "Your review was submitted successfully!")
+                return redirect('cafe_reviews', pk=cafe.id)
+            else:
+                # ... handle review form errors ...
+                pass
 
-            context = {
-                'cafe': cafe,
-                'reviews': reviews,
-                'form': form, # Pass the form with errors back to the template
-                'cafe_images': cafe_images,     # Include images on re-render
-                'cafe_highlights': cafe_highlights, # Include highlights on re-render
-            }
-            return render(request, self.template_name, context, {'locations': CafeLocation.objects.all()})
+        elif 'submit_booking' in request.POST:
+            print(booking_form.is_valid())
+            if booking_form.is_valid():
+                booking = booking_form.save(commit=False)
+                booking.cafe = cafe
+                booking.user = request.user
+                booking.save()
+                messages.success(request, "Your booking was submitted successfully!")
+                return redirect('booking_list')  # <-- CHANGE THIS LINE
+            else:
+                # ... handle booking form errors ...
+                pass
+
+        # If neither form was submitted or there was an error, re-render the page with the form errors.
+        reviews = CafeReview.objects.filter(cafe=cafe).order_by('-date_posted')
+        
+        # --- ADDED: Re-fetch cafe images and highlights on form error ---
+        cafe_images = cafe.images.all()
+        cafe_highlights = cafe.highlights.all()
+
+        context = {
+            'cafe': cafe,
+            'reviews': reviews,
+            'form': form, # Pass the form with errors back to the template
+            'cafe_images': cafe_images,     # Include images on re-render
+            'cafe_highlights': cafe_highlights, # Include highlights on re-render
+            'locations': CafeLocation.objects.all(),
+            'booking_form': booking_form,
+            'time_slots': time_slots,
+            'today': date.today().isoformat(),
+        }
+        return render(request, self.template_name, context)
 
 class AllReviewsListView(View):
     """

@@ -2,10 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import MembershipPlan
 # from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from cafe.models import CafeLocation
 
 def membership_plans_view(request):
     plans = MembershipPlan.objects.all().prefetch_related('features')
-    return render(request, 'membership.html', {'plans': plans})
+    context= {
+        'plans': plans,
+        'locations': CafeLocation.objects.all()
+    }
+    return render(request, 'membership.html', context)
 
 # @login_required
 # def subscribe_to_plan(request, plan_id):

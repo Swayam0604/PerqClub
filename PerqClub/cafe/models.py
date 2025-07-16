@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User # Import Django's User model
+# from django.contrib.auth.models import User # Import Django's User model
 from autoslug import AutoSlugField
+from user.models import CustomUser
 
 # Create your models here.
 
@@ -73,7 +74,7 @@ class CafeHighlight(models.Model):
 
 class CafeReview(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveIntegerField(default=0)  # 1–5 stars
     comment = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)

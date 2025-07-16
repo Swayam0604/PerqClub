@@ -17,63 +17,20 @@
     <div class="auth-forms">
       <div class="form-header">
         <h2 class="form-title">Create Account</h2>
-        <a href="{% url "log_in" %}" class="switch-form">Already have an account?</a>
+        <a href="{% url 'login_user' %}" class="switch-form">Already have an account?</a>
       </div>
 
       <div class="form-container">
         <form class="form" id="signup-form" action="" method="POST">
-          <div class="input-group">
-            <label for="signup-name">First Name</label>
-            <input
-              type="text"
-              id="signup-first-name"
-              name="first_name"
-              required
-            />
-
-            <label for="signup-name">Last Name</label>
-            <input
-              type="text"
-              id="signup-name"
-              name="last_name"
-              required
-            
-            />
-          </div>
-
-          <div class="input-group">
-            <label for="signup-email">Email</label>
-            <input type="email" id="signup-email" name="email" required value="" />
-          </div>
-
-          <div class="input-group">
-            <label for="signup-password">Password</label>
-            <input
-              type="password"
-              id="signup-password"
-              name="password"
-              required
-            />
-          </div>
-
-          <div class="input-group">
-            <label for="signup-confirm-password">Confirm Password</label>
-            <input
-              type="password"
-              id="signup-confirm-password"
-              name="confirm_password"
-              required
-            />
-          </div>
-
+          {% csrf_token %}
+          {{ form.as_p }}
           <div class="checkbox-group">
             <input type="checkbox" id="terms" name="terms_accepted" required />
-            <label for="terms"
-              >I agree to the
-              <a href="/terms" target="_blank" >Terms & Conditions</a></label
-            >
+            <label for="terms">
+              I agree to the
+              <a href="/terms" target="_blank">Terms & Conditions</a>
+            </label>
           </div>
-
           <button type="submit" class="submit-btn">Create Account</button>
           <a
             href="/membership"
@@ -81,9 +38,7 @@
             style="text-align: center; text-decoration: none"
             >Get Membership</a
           >
-
           <div class="divider"><span>OR</span></div>
-
           <div class="social-login">
             <button
               type="button"

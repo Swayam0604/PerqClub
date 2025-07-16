@@ -21,17 +21,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 from cafe import views as cafe_views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',main_views.home,name="home"),
     path('about-us',main_views.about_us,name="About-us"),
     path('cafes/', include('cafe.urls'),name="Cafes"), 
-    path('sign-up',main_views.sign_up,name="sign_up"),
-    path('log-in',main_views.log_in,name="log_in"),
+    path("user",include("user.urls"), name="register"),
     path('register-cafe',cafe_views.register_cafe_view,name="register_cafe"),
     path('registration-success/', cafe_views.registration_success_view, name='registration_success'),
     path('search/', main_views.search, name='search'),
     path('membership/',include('membership.urls'),name="membership"),
+    path('booking/', include('booking.urls')),
 ]
 
 if settings.DEBUG:

@@ -856,6 +856,21 @@ footer {
   opacity: 1;
 }
 
+.booking-input {
+    border: 2px solid #fffcfc;   /* Amber border, adjust color as needed */
+    border-radius: 8px;           /* Rounded corners */
+    padding: 8px 12px;            /* Padding for better appearance */
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin: 10px 0px;
+}
+
+.booking-input:focus {
+    border-color: #b7791f;        /* Darker amber on focus */
+    box-shadow: 0 0 0 2px #ffe8c1;
+}
+
 /* Mobile Navigation */
 
 @media (max-width: 1200px) {
