@@ -25,11 +25,12 @@ class CafeAdmin(admin.ModelAdmin):
     # inlines = [CafeImageInline,CafeHighlightInline]
     ##
     list_display = (
-        'cafe_name', 'branch_name', 'cafe_location', 'contact_email',
-        'contact_phone', 'opening_hours', 'closing_hours', 'terms_accepted', 'location',
+        'cafe_name', 'branch_name', 'cafe_location', 'is_approved', 'created_at',
+        'contact_email', 'contact_phone', 'opening_hours', 'closing_hours', 'is_cafe_of_the_week', 'location',
     )
-    # list_filter = ('cafe_location', 'terms_accepted')
-    search_fields = ('cafe_name', 'cafe_location', 'contact_email', 'location__location_name',)
+    list_filter = ('is_approved', 'cafe_location', 'created_at')
+    list_editable = ('is_approved',)
+    search_fields = ('cafe_name', 'branch_name', 'cafe_location')
     inlines = [CafeImageInline, CafeHighlightInline] # Integrate inlines here
 
     # Customize the admin form layout
@@ -40,7 +41,7 @@ class CafeAdmin(admin.ModelAdmin):
                 'cafe_location', 'branch_manager_name',
                 ('opening_hours', 'closing_hours'), # Group times on one line
                 ('contact_email', 'contact_phone'), # Group contact info
-                'website_url','cafe_specialty','map_url', 'location',
+                'website_url','cafe_specialty','map_url', 'location','is_cafe_of_the_week'
             )
         }),
         ('Legal & Compliance', {

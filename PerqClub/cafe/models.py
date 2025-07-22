@@ -3,6 +3,7 @@ from django.utils import timezone
 # from django.contrib.auth.models import User # Import Django's User model
 from autoslug import AutoSlugField
 from user.models import CustomUser
+from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 
@@ -23,6 +24,8 @@ class Cafe(models.Model):
     terms_accepted = models.BooleanField(default=False, blank=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    is_approved = models.BooleanField(default=False)
+    is_cafe_of_the_week = models.BooleanField(default=False)
     location = models.ForeignKey('CafeLocation', on_delete=models.PROTECT,null=True)
 
     def __str__(self):
@@ -36,7 +39,8 @@ class Cafe(models.Model):
 # New Model for Cafe Images
 class CafeImage(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='cafe_images/') # The actual image file
+    image = models.ImageField(upload_to='cafe_images/',validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'webp'])]
+) # The actual image file
     alt_text = models.CharField(max_length=255, blank=True,null=True) # Optional: for accessibility and SEO
     order = models.PositiveIntegerField(default=0, blank=True, null=False) # Optional: to order images
 

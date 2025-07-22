@@ -33,7 +33,7 @@ def get_time_slots(opening, closing, interval=60):
     return slots
 
 def cafe(request):
-    cafes=Cafe.objects.all()
+    cafes=Cafe.objects.filter(is_approved=True)
 
     context ={
         'locations': CafeLocation.objects.all(),
@@ -48,77 +48,86 @@ def cafe(request):
 
 
 
-def register_cafe_view(request):
-    if request.method == 'POST':
-        cafe_form = CafeForm(request.POST)
-        # Pass request.FILES for image uploads
-        image_formset = CafeImageFormSet(request.POST, request.FILES, prefix='images')
-        highlight_formset = CafeHighlightFormSet(request.POST, prefix='highlights')
+# def register_cafe_view(request):
+#     if request.method == 'POST':
+#         print(request.FILES)  # <-- Add this line here
+#         form = CafeForm(request.POST, request.FILES)
+#         image_formset = CafeImageFormSet(request.POST, request.FILES)
+#         highlight_formset = CafeHighlightFormSet(request.POST)
 
-        # Check if all forms and formsets are valid
-        if cafe_form.is_valid() and image_formset.is_valid() and highlight_formset.is_valid():
-            try:
-                # Use a transaction to ensure all saves succeed or fail together
-                with transaction.atomic():
-                    cafe = cafe_form.save() # Save the main Cafe instance
+#         if form.is_valid() and image_formset.is_valid() and highlight_formset.is_valid():
+#             cafe = form.save()
 
-                    # Save images with automatically assigned sequential order
-                    image_order_counter = 0
-                    for form in image_formset:
-                        # Check if the form has data and is not marked for deletion
-                        if form.cleaned_data and not form.cleaned_data.get('DELETE'):
-                            image = form.save(commit=False) # Get the instance but don't save to DB yet
-                            image.cafe = cafe # Link the image to the newly created cafe
-                            image_order_counter += 1
-                            image.order = image_order_counter # Assign order
-                            image.save() # Now save the image
+#             for image_form in image_formset:
+#                 print(image_form.errors)
+#                 if image_form.cleaned_data:
+#                     image = image_form.save(commit=False)
+#                     image.cafe = cafe
+#                     image.save()
 
-                    # Save highlights with automatically assigned sequential order
-                    highlight_order_counter = 0
-                    for form in highlight_formset:
-                        if form.cleaned_data and not form.cleaned_data.get('DELETE'):
-                            highlight = form.save(commit=False)
-                            highlight.cafe = cafe
-                            highlight_order_counter += 1
-                            highlight.order = highlight_order_counter # Assign order
-                            highlight.save()
+#             for highlight_form in highlight_formset:
+#                 if highlight_form.cleaned_data:
+#                     highlight = highlight_form.save(commit=False)
+#                     highlight.cafe = cafe
+#                     highlight.save()
 
-                # Redirect to a success page after successful registration
-                return redirect(reverse('registration_success'))
+#             return redirect('cafes:list')  # or any success URL
 
-            except Exception as e:
-                # In a real application, you'd log this error and show a user-friendly message
-                print(f"Error saving cafe: {e}")
-                # Optionally, re-render the form with a general error message
-                # messages.error(request, "There was an error registering your cafe. Please try again.")
+#     else:
+#         form = CafeForm()
+#         image_formset = CafeImageFormSet()
+#         highlight_formset = CafeHighlightFormSet()
 
-        else:
-            # If any form/formset is invalid, print errors for debugging
-            print("Data")
-            print("Form errors:")
-            print("Cafe Form Errors:", cafe_form.errors)
-            print("Image Formset Errors:", image_formset.errors)
-            print("Highlight Formset Errors:", highlight_formset.errors)
-            # The template will automatically display specific field errors
-
-    else: # GET request, display empty forms
-        cafe_form = CafeForm()
-        image_formset = CafeImageFormSet(prefix='images')
-        highlight_formset = CafeHighlightFormSet(prefix='highlights')
-
-    context = {
-        'form': cafe_form,
-        'image_formset': image_formset,
-        'highlight_formset': highlight_formset,
-        'locations': CafeLocation.objects.all()
-    }
-    return render(request, 'register-cafe.html', context)
+#     return render(request, 'register-cafe.html', {
+#         'form': form,
+#         'image_formset': image_formset,
+#         'highlight_formset': highlight_formset,
+#     })
 
 def registration_success_view(request):
     context ={
         'locations': CafeLocation.objects.all()
     }
     return render(request, 'registration_success.html', context)
+
+
+# cafe_app/views.py
+
+# views.py
+from django.shortcuts import render, redirect
+from .forms import CafeForm, CafeImageFormSet, CafeHighlightFormSet
+
+def register_cafe_view(request):
+    if request.method == 'POST':
+        form = CafeForm(request.POST, request.FILES)
+        image_formset = CafeImageFormSet(request.POST, request.FILES)
+        highlight_formset = CafeHighlightFormSet(request.POST)
+
+        if form.is_valid() and image_formset.is_valid() and highlight_formset.is_valid():
+            cafe = form.save()
+
+            image_formset.instance = cafe
+            image_formset.save()
+
+            for highlight_form in highlight_formset:
+                if highlight_form.cleaned_data:
+                    highlight = highlight_form.save(commit=False)
+                    highlight.cafe = cafe
+                    highlight.save()
+
+            return redirect('cafe_list')
+
+    else:
+        form = CafeForm()
+        image_formset = CafeImageFormSet()
+        highlight_formset = CafeHighlightFormSet()
+
+    return render(request, 'register-cafe.html', {
+        'form': form,
+        'image_formset': image_formset,
+        'highlight_formset': highlight_formset,
+    })
+
 
 
 # --- Class-Based Views for Review Functionality ---
@@ -262,6 +271,7 @@ class CafeLocationDetails(DetailView):
         context = super().get_context_data(**kwargs)
         location=self.object
         context['locations'] = CafeLocation.objects.all()
-        context["cafes"]=Cafe.objects.exclude(location=location)
+        context["cafes"]=Cafe.objects.exclude(location=location).filter(is_approved=True)
+        context['location_cafes'] = self.object.cafe_set.filter(is_approved=True)
         
         return context

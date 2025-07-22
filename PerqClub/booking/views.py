@@ -34,3 +34,5 @@ def booking_list(request):
     else:
         bookings = Booking.objects.filter(user=request.user).order_by('-date', '-time')
     return render(request, 'bookings-list.html', {'bookings': bookings})
+
+

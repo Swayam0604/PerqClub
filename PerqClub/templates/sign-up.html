@@ -17,18 +17,23 @@
     <div class="auth-forms">
       <div class="form-header">
         <h2 class="form-title">Create Account</h2>
-        <a href="{% url 'login_user' %}" class="switch-form">Already have an account?</a>
+        <a href="{% url 'login_user' %}" class="switch-form"
+          >Already have an account?</a
+        >
       </div>
 
       <div class="form-container">
         <form class="form" id="signup-form" action="" method="POST">
           {% csrf_token %}
+          <div class="checkbox-group">
+            <input type="checkbox" id="is_cafe" name="is_cafe" />
+            <label for="is_cafe"> Are you a Cafe? </label>
+          </div>
           {{ form.as_p }}
           <div class="checkbox-group">
-            <input type="checkbox" id="terms" name="terms_accepted" required />
+            <input type="checkbox" id="terms" name="terms" required />
             <label for="terms">
-              I agree to the
-              <a href="/terms" target="_blank">Terms & Conditions</a>
+              I agree to the <a href="#">Terms & Conditions</a>
             </label>
           </div>
           <button type="submit" class="submit-btn">Create Account</button>
@@ -60,7 +65,30 @@
     </div>
   </div>
 </div>
-{% endblock %}
-{% block js %}
+{% endblock %} {% block js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const isCafeCheckbox = document.getElementById("is_cafe");
+    // Find the parent <p> tags that Django's form.as_p creates
+    const firstNameField = document
+      .getElementById("id_first_name")
+      .closest("p");
+    const lastNameField = document.getElementById("id_last_name").closest("p");
+
+    function toggleNameFields() {
+      if (isCafeCheckbox.checked) {
+        firstNameField.style.display = "none";
+        lastNameField.style.display = "none";
+      } else {
+        firstNameField.style.display = "block";
+        lastNameField.style.display = "block";
+      }
+    }
+
+    // Run on page load and when the checkbox changes
+    toggleNameFields();
+    isCafeCheckbox.addEventListener("change", toggleNameFields);
+  });
+</script>
 <script src="{% static 'js/sign-up.js' %}"></script>
 {% endblock js %}

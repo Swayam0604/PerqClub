@@ -12,6 +12,13 @@ class RegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'first_name', 'last_name','phone_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Check if the form is bound to POST data and if 'is_cafe' is checked
+        if self.data.get('is_cafe') == 'on':
+            self.fields['first_name'].required = False
+            self.fields['last_name'].required = False
+
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get("password1")

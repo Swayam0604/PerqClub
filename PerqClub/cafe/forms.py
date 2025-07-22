@@ -52,6 +52,10 @@ class CafeImageForm(forms.ModelForm):
             'image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].required = False
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         if not instance.alt_text:
@@ -60,6 +64,13 @@ class CafeImageForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if not image.content_type in ['image/jpeg', 'image/png','image/jpg']:
+                raise forms.ValidationError("Only JPEG and PNG and JPG images are allowed.")
+        return image
 
 
 # Formset for Cafe Images (allows multiple image uploads)

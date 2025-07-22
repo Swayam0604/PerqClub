@@ -1,6 +1,7 @@
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.utils import timezone
+from django.conf import settings
 
 class MembershipPlan(models.Model):
    
@@ -17,18 +18,18 @@ class MembershipPlan(models.Model):
     def __str__(self):
         return self.name
 
-# class UserMembership(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     plan = models.ForeignKey(MembershipPlan, on_delete=models.CASCADE)
-#     start_date = models.DateField(default=timezone.now)
-#     end_date = models.DateField(null=True, blank=True)  # null if still active
-#     is_active = models.BooleanField(default=True)
+class UserMembership(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    plan = models.ForeignKey(MembershipPlan, on_delete=models.CASCADE)
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField(null=True, blank=True)  # null if still active
+    is_active = models.BooleanField(default=True)
 
-#     def __str__(self):
-#         return f"{self.user.username} - {self.plan.name}"
+    def __str__(self):
+        return f"{self.user.username} - {self.plan.name}"
 
-#     class Meta:
-#         unique_together = ('user', 'plan', 'start_date')  # Prevent duplicates
+    class Meta:
+        unique_together = ('user', 'plan', 'start_date')  # Prevent duplicates
 
 class PlanFeature(models.Model):
     plan = models.ForeignKey(

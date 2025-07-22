@@ -152,6 +152,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 AUTH_USER_MODEL = 'user.CustomUser' 
 
+RAZOR_KEY_ID = "rzp_test_hcUZ2CWTYvHDpF"
+RAZOR_KEY_SECRET = "Mmfwhx6vlYzW0amwCCujvkVg"
+
 # EMAIL SETTINGS
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

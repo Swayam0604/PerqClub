@@ -33,6 +33,8 @@ def register_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            user_data = form.cleaned_data
+            user_data['is_cafe'] = request.POST.get('is_cafe') == 'on'  # Check if checkbox is checked
             request.session['user_data'] = form.cleaned_data
             otp_code = generate_otp()
             request.session['otp_code'] = otp_code
@@ -63,10 +65,12 @@ def verify_otp_view(request):
             user = User(
                 username=user_data['username'],
                 email=user_data['email'],
-                first_name=user_data['first_name'],
-                last_name=user_data['last_name'],
+                # Use .get() for optional fields
+                first_name=user_data.get('first_name', ''),
+                last_name=user_data.get('last_name', ''),
                 phone_number=user_data['phone_number'],
-                is_active=True
+                is_active=True,
+                is_staff=user_data.get('is_cafe', False)  # Set is_staff if is_cafe is true
             )
             user.set_password(user_data['password1'])  # or 'password'
             user.save()
@@ -92,7 +96,7 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -101,7 +105,7 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
             return render(request, 'log-in.html')  # Render the login template
     else:
-        return render(request, 'log-in.html')  # Render the login template 
+        return render(request, 'log-in.html')  # Render the login template
 
 
 def logout_view(request):

@@ -145,25 +145,29 @@
       </div>
 
       <div class="form-section">
-        <div class="section-header">
-          <h2>Cafe Images</h2>
-          <div class="accent-line"></div>
-          <i class="fas fa-chevron-down toggle-icon"></i>
-        </div>
-        <div class="form-grid ">
-          <div class="form-group full-width">
-            <label>Café Images <span class="required-mark">*</span></label>
-            {{ image_formset.management_form }}
-            {% for form in image_formset.forms|slice:":5" %}
-              <div class="icon-input images">
-                <i class="fas fa-image"></i>
-                {{ form.image }}
-                {{ form.image.errors }}
-              </div>
-            {% endfor %}
-          </div>
+    <div class="section-header">
+      <h2>Cafe Images</h2>
+      <div class="accent-line"></div>
+      <i class="fas fa-chevron-down toggle-icon"></i>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full-width">
+       <label>Café Images <span class="required-mark">*</span></label>
+  {{ image_formset.management_form }}
+  {% for form in image_formset %}
+    <div class="icon-input images">
+      <i class="fas fa-image"></i>
+      {{ form.image }}
+      
+      {% for error in form.errors %}
+        <div class="error">{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endfor %}
 
-        </div>
+      </div>
+    </div>
+  </div>
 
       <div class="form-section">
         <div class="section-header">

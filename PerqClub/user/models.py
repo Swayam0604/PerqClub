@@ -6,7 +6,16 @@ from datetime import timedelta
 # Create your models here.
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=10)
-    is_verified = models.BooleanField(default=False)
+    is_cafe = models.BooleanField(default=False)
+
+    def save(self,*args,**kwargs):
+        if self.is_cafe:
+            self.is_staff = True
+        super().save(*args,**kwargs)
+
+    
+    
+
 
 class OTP(models.Model):
     phone_number = models.CharField(max_length=15)

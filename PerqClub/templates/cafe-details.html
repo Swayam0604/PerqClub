@@ -68,7 +68,7 @@ Cafes-details{% endblock %} {% block css %}
           <p>{{cafe.cafe_description|linebreaksbr}}</p>
         </div>
 
-        <div class="cafe-highlights">
+        <!-- <div class="cafe-highlights">
           <div class="highlights-title">Highlights</div>
           {% if cafe_highlights %}
           <div class="highlights-list" id="highlights-list">
@@ -83,7 +83,26 @@ Cafes-details{% endblock %} {% block css %}
           {% else %}
           <p>No highlights available for this café.</p>
           {% endif %}
-        </div>
+        </div> -->
+
+        <div class="cafe-highlights">
+  <div class="highlights-title">Highlights</div>
+
+  {% if cafe_highlights %}
+  <div class="highlights-list" id="highlights-list">
+    {% for highlight in cafe_highlights %}
+    <div class="highlight-item">
+    <i class="fas {{ highlight.icon_class|default:'fa-star' }}"></i>
+    {{ highlight.highlight_text }}
+    </div>
+
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No highlights available for this café.</p>
+  {% endif %}
+</div>
+
       </div>
 
       <div class="map-booking">

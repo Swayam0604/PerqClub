@@ -1,289 +1,3 @@
-/* ===== ROOT VARIABLES & GLOBAL STYLES ===== */
-:root {
-  --primary-brown: #7d4f2a;
-  --light-brown: #b78756;
-  --dark-brown: #51331c;
-  --cream: #f5f1e8;
-  --accent-green: #a5d46a;
-  --white: #ffffff;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: "Roboto", sans-serif;
-  color: #4a2c12;
-  background-color: #fdf8f3;
-  line-height: 1.6;
-  overflow-x: hidden;
-}
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* ===== CONTENT CONTAINER STYLES ===== */
-.content {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-/* ===== AUTH-CONTAINER STYLES ===== */
-.auth-container {
-  display: flex;
-  width: 100%;
-  max-width: 900px;
-  min-height: 500px;
-  background-color: var(--white);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-/* ===== AUTH-IMAGE & AUTH-IMAGE-OVERLAY STYLES ===== */
-.auth-image {
-  flex: 1;
-  background-image: url();
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-
-.auth-image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(125, 79, 42, 0.6), rgba(81, 51, 28, 0.8));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  color: var(--white);
-  text-align: center;
-}
-
-.auth-image-overlay h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.auth-image-overlay p {
-  font-size: 1.1rem;
-  max-width: 300px;
-  margin-bottom: 2rem;
-}
-
-/* ===== AUTH-FORMS CONTAINER STYLES ===== */
-.auth-forms {
-  flex: 1;
-  padding: 2.5rem;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ===== FORM-HEADER STYLES ===== */
-.form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.form-title {
-  font-size: 1.8rem;
-  color: var(--primary-brown);
-  font-weight: bold;
-}
-
-.switch-form {
-  color: var(--primary-brown);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.switch-form:hover {
-  text-decoration: underline;
-}
-
-/* ===== FORM-CONTAINER & FORM STYLES ===== */
-.form-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-/* ===== INPUT GROUP & FORM ELEMENTS STYLES ===== */
-.input-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: var(--dark-brown);
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--primary-brown);
-}
-
-.checkbox-group {
-  display: flex;
-  align-items: baseline;
-  margin:0.5rem 0; 
-}
-
-.checkbox-group input {
-  width: auto;
-  margin-right: 0.5rem;
-}
-.checkbox-group a {
-  text-decoration-color: var(--light-brown);
-  color: var(--light-brown);
-}
-
-/* ===== BUTTON STYLES ===== */
-.submit-btn {
-  background-color: var(--primary-brown);
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-  background-color: var(--dark-brown);
-}
-
-.alt-submit-btn {
-  background-color: var(--accent-green);
-  color: var(--dark-brown);
-  border: none;
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s;
-}
-
-.alt-submit-btn:hover {
-  background-color: #94c35a;
-}
-
-/* ===== DIVIDER STYLES ===== */
-.divider {
-  display: flex;
-  align-items: center;
-  margin: 1.5rem 0;
-  color: #999;
-}
-
-.divider::before,
-.divider::after {
-  content: "";
-  flex: 1;
-  border-bottom: 1px solid #ddd;
-}
-
-.divider span {
-  padding: 0 1rem;
-}
-
-/* ===== SOCIAL LOGIN STYLES ===== */
-.social-login {
-  display: flex;
-  gap: 1rem;
-}
-
-.social-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background-color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.social-btn:hover {
-  background-color: #f5f5f5;
-}
-
-/* ===== OTHER STYLES (NOT IN MAIN CONTAINER) ===== */
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--primary-brown);
-  text-decoration: none;
-}
-
-.footer {
-  text-align: center;
-  color: var(--dark-brown);
-  padding: 2rem;
-  background-color: var(--white);
-  margin-top: auto;
-}
-
-.error-message {
-  color: #e74c3c;
-  font-size: 0.9rem;
-  margin-top: 0.3rem;
-}
-
-/* ===== RESPONSIVE STYLES ===== */
-@media (max-width: 768px) {
-  .auth-container {
-    flex-direction: column;
-  }
-
-  .auth-image {
-    min-height: 200px;
-  }
-
-  .auth-forms {
-    padding: 1.5rem;
-  }
-}
-
 /* Header Styles */
 header {
   background-color: #fff;
@@ -614,7 +328,7 @@ footer {
   justify-content: center;
   transition: background-color 0.3s;
   text-decoration: none;
-  color: #fff
+  color: #fff;
 }
 
 .social-links a:hover {
@@ -668,4 +382,114 @@ footer {
   .social-links {
     justify-content: center;
   }
+}
+
+:root {
+  --primary-color: #c87d30; /* Medium coffee brown */
+  --primary-dark: #4a2c12; /* Dark coffee brown */
+  --primary-light: #7d4f2a; /* Light coffee brown */
+  --secondary-color: #c87d30; /* Medium coffee brown for secondary elements */
+  --accent-color: #f1e4d4; /* Cream/beige accent */
+  --text-dark: #333333; /* Dark text */
+  --text-light: #ffffff; /* White text */
+  --text-muted: #7d4f2a; /* Muted text in light coffee brown */
+  --bg-light: #ffffff; /* White background */
+  --bg-dark: #4a2c12; /* Dark coffee background */
+  --bg-muted: #f1e4d4; /* Cream/beige background */
+  --border-color: #e0e0e0; /* Light border */
+  --shadow-color: rgba(74, 44, 18, 0.15); /* Shadow with coffee tone */
+  --card-bg: #ffffff; /* White card background */
+  --success-color: #7d4f2a; /* Success in light coffee brown */
+  --error-color: #c87d30; /* Error in medium coffee brown */
+}
+
+section {
+  font-family: "Poppins", sans-serif; /* Applied font-body */
+  background-color: var(--bg-muted); /* Using new background color */
+}
+
+h1 {
+  font-family: "Playfair Display", serif; /* Applied font-heading */
+  color: var(--primary-dark); /* Using dark coffee brown for heading */
+}
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.review-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -2px var(--shadow-color);
+  transition: transform 0.3s ease-in-out;
+}
+
+.review-card:hover {
+  transform: scale(1.01);
+}
+
+.stars {
+  display: flex;
+}
+.star-filled {
+  color: var(--primary-color); /* Using medium coffee brown for filled stars */
+}
+.star-empty {
+  color: var(--border-color); /* Using light border color for empty stars */
+}
+
+.text-person-name {
+  color: var(--text-dark); /* Dark text for names */
+}
+
+.text-comment {
+  color: var(--text-dark); /* Dark text for comments */
+}
+
+.text-date {
+  color: var(--text-muted); /* Muted text for dates */
+}
+
+.membership-details-flex {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  .membership-details-flex {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  .membership-details-main {
+    flex: 1;
+  }
+  .membership-details-upgrade {
+    width: 33%;
+    min-width: 220px;
+    margin-top: 0;
+  }
+}
+
+#membership-price {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 700;
+  background: #fff3e0;
+  padding: 0.25em 0.75em;
+  border-radius: 1em;
+  box-shadow: 0 2px 8px -2px var(--shadow-color);
+  margin-left: 0.5em;
+  letter-spacing: 1px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.price-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-right: 0.5em;
+  vertical-align: middle;
 }
