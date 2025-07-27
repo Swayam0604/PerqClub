@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}PerQClub - Registration Success
+{% endblock %}
+ {% block css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" /> 
+{% endblock css %}
+
+{% block content %}
+<div class="profile-dashboard-container">
+  <aside class="profile-sidebar">
+    <div class="profile-avatar">
+      <!-- Show first letter of name or image -->
+      <span>
+        {% if user.profile.image %}
+          <img src="{{ user.profile.image.url }}" alt="{{ user.get_full_name }}" />
+        {% elif user.is_superuser %}
+          A
+        {% elif user.is_cafe %}
+          C
+        {% else %}
+          {{ user.get_full_name|default:user.username|first }} 
+        {% endif %}
+      </span>
+    </div>
+    <div class="profile-name">{{ user.get_full_name }}
+      {% if user.is_superuser %}
+        <span class="admin-badge">Admin</span>
+      {% elif user.is_cafe %}
+        <span class="cafe-badge">{{ user.username }}</span>
+      {% endif %}
+    </div>
+    <div class="profile-membership">
+      {% if user.is_superuser %}
+    Admin
+      {% elif user.is_authenticated and user.is_cafe %}
+    Cafe Partner
+  {% elif user.is_authenticated and membership %}
+    {{ membership.plan.name }} Member
+  {% elif user.is_authenticated and not membership %}
+    {{ user.username }} - No Membership
+  {% elif user.is_authenticated %}
+    {{ user.username }} - No Membership
+  {% endif %}
+    </div>
+    <ul class="profile-menu">
+      <li class="active">Edit Profile</li>
+      <li>Bookings</li>
+      <li>Membership</li>
+      <li>Recently Viewed Cafes</li>
+      <li>Followed</li>
+      <li>Manage Cards</li>
+      <li>Wishlist Cafes</li>
+      <li>Reviews</li>
+      <li>Account Settings</li>
+      <li class="logout">Log Out</li>
+    </ul>
+  </aside>
+  <main class="profile-main">
+    <section class="profile-header">
+      <div class="profile-info-block">
+        {% if user.is_superuser %}
+          <h2>Welcome back, {{ user.username }} !!</h2>
+          <p>You have full administrative access.</p>
+        {% comment %} <!-- {% elif user.is_staff %}
+          <h2>Welcome back, {{ user.username }} !!</h2>
+          <p>You have staff privileges.</p> --> {% endcomment %}
+        {% elif user.is_cafe %}
+          <h2>Welcome back,{{ user.username }} !!</h2>
+          <p>Thank you for partnering with us!</p>
+        {% else %}
+          <h2>Welcome back, {{ user.username }} !!</h2>
+          {% if membership %}
+            <p>Membership valid till <strong>{{ membership.end_date }}</strong></p>
+          {% else %}
+            <p>No active membership.</p>
+          {% endif %}
+        {% endif %}
+      </div>
+      {% if user.is_superuser %}
+      <div class="profile-stats">
+        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
+        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
+        <div><span>{{ memberships_count }}</span><label>Memberships</label></div>
+        <div><span>{{ cafes_count }}</span><label>Cafes</label></div>
+        <div><span>{{ user_count }}</span><label>User</label>
+      </div>
+      {% elif user.is_cafe %}
+      <div class="profile-stats">
+        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
+        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
+      </div>
+      {% elif user.is_authenticated %}
+      <div class="profile-stats">
+        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
+        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
+        {% if membership %}
+  <div>
+    <span>
+      {% if membership.is_active %}
+        Active
+      {% else %}
+        Inactive
+      {% endif %}
+    </span>
+    <label>Membership</label>
+  </div>
+{% else %}
+  <div>
+    <span>No Membership</span>
+    <label>Membership</label>
+  </div>
+{% endif %}
+      {% endif %}
+    </section>
+    <section class="profile-content">
+      <h3>Recent Activity</h3>
+      <div class="profile-empty-state">
+        <img src="empty.svg" alt="No activity" />
+        <p>No recent activity yet!</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+{% endblock content %}
+
+
+{% block js %}
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock js %}

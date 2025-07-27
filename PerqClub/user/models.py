@@ -7,15 +7,10 @@ from datetime import timedelta
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=10)
     is_cafe = models.BooleanField(default=False)
-
     def save(self,*args,**kwargs):
         if self.is_cafe:
             self.is_staff = True
         super().save(*args,**kwargs)
-
-    
-    
-
 
 class OTP(models.Model):
     phone_number = models.CharField(max_length=15)

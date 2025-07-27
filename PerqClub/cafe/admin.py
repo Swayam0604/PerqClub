@@ -8,8 +8,15 @@ class CafeImageInline(admin.TabularInline): # Or admin.StackedInline
     # max_num = 5 # This is where you set the limit!
     fields = ['image', 'alt_text', 'order'] # Expose alt_text and order for admin editing
     # readonly_fields = ['image'] # Make image read-only after upload in admin (optional)
-    list_editable = ['order'] # Allow direct editing of order in the inline list
+    # list_editable = ['order'] # Allow direct editing of order in the inline list
+    # list_display=['cafe','images','alt_text']
+@admin.register(CafeImage)
+class CafeImageAdmin(admin.ModelAdmin):
+    list_display = ['cafe', 'image', 'alt_text']
+    search_fields = ['alt_text', 'cafe__cafe_name']
+    list_filter = ['cafe']  # ✅ Filters on the right sidebar
 
+# admin.site.register(CafeImage, CafeImageAdmin)
 
 # NEW: Define the inline for CafeHighlight
 class CafeHighlightInline(admin.TabularInline): # Use TabularInline for compactness
@@ -18,6 +25,13 @@ class CafeHighlightInline(admin.TabularInline): # Use TabularInline for compactn
     # max_num = 6 # <--- THIS IS WHERE YOU SET THE LIMIT OF 6 HIGHLIGHTS
     fields = ['highlight_text','icon_class', 'order'] # Expose text and order
     list_editable = ['order']
+@admin.register(CafeHighlight)
+class cafeHighlightAdmin(admin.ModelAdmin):
+    list_display = ['cafe', 'highlight_text','icon_class','order']
+    search_fields = ['highlight_text', 'cafe__cafe_name']
+    list_filter = ['cafe','highlight_text']  # ✅ Filters on the right sidebar
+
+# admin.site.register(CafeHighlight,cafeHighlightAdmin)
 
 @admin.register(Cafe)
 class CafeAdmin(admin.ModelAdmin):
@@ -27,8 +41,9 @@ class CafeAdmin(admin.ModelAdmin):
     list_display = (
         'cafe_name', 'branch_name', 'cafe_location', 'is_approved', 'created_at',
         'contact_email', 'contact_phone', 'opening_hours', 'closing_hours', 'is_cafe_of_the_week', 'location',
+        'manager'
     )
-    list_filter = ('is_approved', 'cafe_location', 'created_at')
+    list_filter = ('is_approved', 'location','is_cafe_of_the_week')
     list_editable = ('is_approved',)
     search_fields = ('cafe_name', 'branch_name', 'cafe_location')
     inlines = [CafeImageInline, CafeHighlightInline] # Integrate inlines here
@@ -41,7 +56,8 @@ class CafeAdmin(admin.ModelAdmin):
                 'cafe_location', 'branch_manager_name',
                 ('opening_hours', 'closing_hours'), # Group times on one line
                 ('contact_email', 'contact_phone'), # Group contact info
-                'website_url','cafe_specialty','map_url', 'location','is_cafe_of_the_week'
+                'website_url', 'cafe_specialty', 'map_url', 'location', 'is_cafe_of_the_week',
+                'manager',  # <-- Add this line
             )
         }),
         ('Legal & Compliance', {
@@ -95,7 +111,7 @@ class CafeReviewAdmin(admin.ModelAdmin):
 
 
 # admin.site.register(Cafe,CafeAdmin)
-admin.site.register(CafeHighlight)
+
 
 
 class LocationAdmin(admin.ModelAdmin):

@@ -163,3 +163,15 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'swayamharawade0604@gmail.com'
 EMAIL_HOST_PASSWORD = 'invg mpog klbo zcsl'  # Not your Gmail password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_URL = 'login_user'
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'secondary',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',  # <-- important for 'error' -> 'danger'
+}

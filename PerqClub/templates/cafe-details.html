@@ -1,10 +1,7 @@
 {% extends "base.html" %} {% load static %} {% block title %}PerqClub -
 Cafes-details{% endblock %} {% block css %}
 <link rel="stylesheet" href="{% static 'css/cafes-details.css' %}" />
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-/>
+
 <link
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -173,12 +170,16 @@ Cafes-details{% endblock %} {% block css %}
           </a>
           <!-- Add more admin/staff options as needed -->
           {% endif %} {% else %}
-          <p class="text-amber-700 font-semibold mt-2">
-            Please
-            <a href="{% url 'login_user' %}" class="underline">log in</a> to
-            reserve a table.
-          </p>
-          {% endif %}
+  {% comment %} Send them to login with a special `next` AND message flag {% endcomment %}
+  <p class="text-amber-700 font-semibold mt-2">
+    Please
+    <a href="{% url 'login_user' %}?next={{ request.path }}&reason=booking" class="underline">
+      Log In
+    </a>
+    to reserve a table.
+  </p>
+{% endif %}
+
         </div>
       </div>
     </div>

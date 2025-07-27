@@ -10,17 +10,12 @@ from django.contrib import messages
 import random
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
+from booking.models import Booking  # adjust import as per your app
+from cafe.models import CafeReview, Cafe   # adjust import as per your app
+from membership.models import UserMembership
 
 def generate_otp():
     return str(random.randint(100000, 999999))
-
-# def send_otp_textbelt(phone_number, otp):
-#     response = requests.post('https://textbelt.com/text', {
-#         'phone': phone_number,
-#         'message': f'Your OTP for Registration Perqclub is: {otp}',
-#         'key': 'textbelt'  # Free key: allows 1 SMS/day
-#     })
-#     return response.json()
 
 def send_otp_email(email, otp):
     subject = "Perqclub Email Verification - OTP"
@@ -91,8 +86,26 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from membership.models import UserMembership
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
 
 def login_view(request):
+    next_url = request.GET.get('next', 'home')  # Default redirect if no next is given
+    reason = request.GET.get('reason')  # New: capture reason for login prompt
+
+    if request.method == 'GET':
+        # Show appropriate message based on `reason` or `next` URL
+        if reason == 'booking':
+            messages.error(request, "You need to login to reserve a table.")
+        elif reason == 'review':
+            messages.error(request, "You must be logged in to write a review.")
+        elif next_url == '/membership/':
+            messages.error(request, "You need to login to access the membership page.")
+        elif next_url == '/checkout/':
+            messages.error(request, "Login required to proceed to checkout.")
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -100,12 +113,13 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirect to the home page
+            return redirect(request.POST.get('next', next_url))  # Preserve redirection
         else:
             messages.error(request, "Invalid username or password.")
-            return render(request, 'log-in.html')  # Render the login template
-    else:
-        return render(request, 'log-in.html')  # Render the login template
+
+    return render(request, 'log-in.html', {'next': next_url})
+
+
 
 
 def logout_view(request):
@@ -116,5 +130,37 @@ def logout_view(request):
     messages.success(request, "You have been successfully logged out.")
     return redirect('login_user')
 
+# @login_required  # optional but recommended to protect profile access
+def profile(request):
+    user = request.user
+    membership = UserMembership.objects.filter(user=user).order_by('-is_active', '-end_date').first()
 
+    user_count = None  # Default value
+
+    if user.is_superuser:
+        bookings_count = Booking.objects.count()
+        reviews_count = CafeReview.objects.count()
+        memberships_count = UserMembership.objects.count()
+        cafes_count = Cafe.objects.count()
+        user_count = get_user_model().objects.count()
+    elif hasattr(user, 'is_cafe') and user.is_cafe:
+        cafes = Cafe.objects.filter(manager=user)
+        bookings_count = Booking.objects.filter(cafe__in=cafes).count()
+        reviews_count = CafeReview.objects.filter(cafe__in=cafes).count()
+        memberships_count = 0
+        cafes_count = cafes.count()
+    else:
+        bookings_count = Booking.objects.filter(user=user).count()
+        reviews_count = CafeReview.objects.filter(user=user).count()
+        memberships_count = UserMembership.objects.filter(user=user).count()
+        cafes_count = 0
+
+    return render(request, 'profile.html', {
+        'user_count': user_count,
+        'membership': membership,
+        'bookings_count': bookings_count,
+        'reviews_count': reviews_count,
+        'memberships_count': memberships_count,
+        'cafes_count': cafes_count,
+    })
 

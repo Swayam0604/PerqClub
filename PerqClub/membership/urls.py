@@ -7,4 +7,6 @@ urlpatterns = [
     # path('payment_success/', views.payment_success_view, name='payment_success'),
     path('checkout/', views.checkout_view, name='membership_checkout'),
     path('payment/success/', views.membership_payment_success, name='membership_payment_success'),
+    path('create-order/<int:membership_id>/', views.create_razorpay_order, name='create_order'),
+
 ]

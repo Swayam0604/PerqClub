@@ -1,125 +1,191 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Checkout{% endblock title %}
+{% block title %}Checkout{% endblock %}
+
 {% block css %}
-<link rel='stylesheet' href="{% static "css/reviews.css" %}">
-<script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
 {% endblock css %}
+
 {% block content %}
 <section class="min-h-screen p-4 flex items-center justify-center">
-    <div class="w-full rounded-lg p-6 md:p-8 review-card">
-        <h1 class="text-3xl font-bold mb-6 text-center">
-            Membership Checkout
-        </h1>
+  <div class="w-full rounded-lg p-6 md:p-8 review-card">
+    <h1 class="text-3xl font-bold mb-6 text-center">
+      Membership Checkout
+    </h1>
 
-        <!-- Membership Details Card -->
-        <div id="membership-details" class="rounded-lg review-card p-6 mb-8">
-            <div class="flex flex-col md:flex-row md:items-start md:space-x-8">
-                <div class="flex-1">
-                    <h2 class="text-2xl font-semibold mb-2" id="membership-name">Membership: {{ current_membership.name }}</h2>
-                    <p class="mb-2" id="membership-description">Description: {{ current_membership.description }}</p>
-                    <p class="mb-2"><strong>Perks:</strong></p>
-                    <ul class="list-disc list-inside mb-2" id="membership-perks">
-                        {% for perk in current_membership.features.all %}
-                            <li>{{ perk }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p class="mb-2">
-                        <span class="price-label">Price:</span>
-                        ₹<span id="membership-price">{{ current_membership.price }}</span>
-                    </p>
-                </div>
-                <!-- Membership Upgrade Dropdown to the right -->
-                <div class="w-full md:w-1/3 mt-4 md:mt-0">
-                    <label for="membership-select" class="block text-lg font-semibold mb-2">Wanna Upgrade your membership?</label>
-                    <select id="membership-select" name="membership_id" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200" required>
-                        <option value="" selected disabled>Wanna Upgrade your membership</option>
-                        {% for membership in memberships %}
-                            <option value="{{ membership.id }}"
-                                {% if membership.id == current_membership.id %}selected{% endif %}>
-                                {{ membership.name }} (₹{{ membership.price }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
+    {% if is_upgrade %}
+      <p class="text-green-600 font-semibold mb-4">You're upgrading your current membership.</p>
+    {% endif %}
+
+    <!-- Price Summary -->
+    <div class="price-summary mb-8">
+      <h2 class="text-2xl font-semibold mb-2">Price Summary</h2>
+      <p class="text-xl">
+        ₹<span id="price-summary-amount">{{ current_membership.price }}</span>
+      </p>
+    </div>
+
+    <!-- Membership Details Card -->
+    <div id="membership-details" class="rounded-lg review-card p-6 mb-8">
+      <div class="flex flex-col md:flex-row md:items-start md:space-x-8">
+
+        <!-- Current Membership Info -->
+        <div class="flex-1">
+          <h2 class="text-2xl font-semibold mb-2" id="membership-name">
+            Membership: {{ current_membership.name }}
+          </h2>
+          <p class="mb-2" id="membership-description">
+            Description: {{ current_membership.description }}
+          </p>
+          <p class="mb-2"><strong>Perks:</strong></p>
+          <ul class="list-disc list-inside mb-2" id="membership-perks">
+            {% for perk in current_membership.features.all %}
+              <li>{{ perk.feature_text }}</li>
+            {% endfor %}
+          </ul>
+          <p class="mb-2">
+            <span class="price-label">Price:</span>
+            ₹<span id="membership-price">{{ current_membership.price }}</span>
+          </p>
         </div>
 
-        <!-- Purchase/Upgrade Button -->
-        <form method="post" action="">
-            {% csrf_token %}
-            <button id="rzp-button1" type="submit" class="w-full py-3 px-6 bg-amber-700 text-white font-semibold rounded-lg shadow-md hover:bg-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg purchase-btn">
-               Purchase Membership {{ current_membership.name }} : ₹ {{current_membership.price}}
-            </button>
-        </form>
+        <!-- Upgrade Dropdown -->
+        <div class="w-full md:w-1/3 mt-4 md:mt-0">
+          <label for="membership-select" class="block text-lg font-semibold mb-2">
+            Wanna Upgrade your membership?
+          </label>
+          <select id="membership-select" name="membership_id"
+                  class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                  required>
+            <option value="" selected disabled>Choose a membership</option>
+            {% for membership in memberships %}
+              <option value="{{ membership.id }}"
+                {% if membership.id == current_membership.id %}selected{% endif %}>
+                {{ membership.name }} (₹{{ membership.price }})
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
     </div>
+
+    
+    <!-- Hidden fields for CSRF and selected plan -->
+    <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+    <input type="hidden" id="selected-plan-id" name="plan_id" value="{{ current_membership.id }}">
+
+    <h1>{{ current_membership.id }}</h1>
+
+    <!-- Razorpay Trigger Button -->
+    <button id="purchase-btn"
+            class="w-full py-3 px-6 bg-amber-700 text-white font-semibold rounded-lg shadow-md hover:bg-amber-800 focus:outline-none focus:ring-4 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-300 ease-in-out text-lg">
+      Purchase Membership {{ current_membership.name }} : ₹ {{ current_membership.price }}
+    </button>
+  </div>
 </section>
 {% endblock content %}
 
 {% block js %}
-<script>
-   
-</script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-var options = {
-    "key": "rzp_test_hcUZ2CWTYvHDpF",
-    "amount": "{{ payment_detailss.amount }}",
-    "currency": "INR",
-    "name": "PerqClub",
-    "description": "Membership Purchase",
-    "image": "https://example.com/your_logo",
-    "order_id": "{{payment_detailss.id}}",
-    "callback_url": "{% url 'membership_payment_success' %}",
-    "prefill": {
-        "name": "Gaurav Kumar",
-        "email": "gaurav.kumar@example.com",
-        "contact": "9000090000"
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+ <script>
+// Initial Razorpay options - amount in paise (integer)
+const options = {
+  key: "rzp_test_hcUZ2CWTYvHDpF", // Your Razorpay test key
+  amount: Math.round({{ current_membership.price|floatformat:"2" }} * 100), // Convert rupees to paise safely
+  currency: "INR",
+  name: "PerqClub",
+  description: "Membership Payment",
+  order_id: "{{ payment_details.id }}", // Razorpay order ID from backend
+  prefill: {
+    name: "Gaurav Kumar",
+    email: "gaurav.kumar@example.com",
+    contact: "9000090000"
+  },
+  notes: { address: "PerqClub Office" },
+  theme: { color: "#3399cc" },
+  
+  // Handler after successful payment capture
+  handler: function(response) {
+    const csrfToken = document.getElementById("csrf-token").value;
+    const planId = document.getElementById("selected-plan-id").value;
+
+    console.log(planId)
+
+    // Construct a form to POST payment data securely back to your server
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/membership/payment/success/";
+    form.innerHTML = `
+      <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+      <input type="hidden" name="razorpay_payment_id" value="${response.razorpay_payment_id}">
+      <input type="hidden" name="razorpay_order_id" value="${response.razorpay_order_id}">
+      <input type="hidden" name="razorpay_signature" value="${response.razorpay_signature}">
+      <input type="hidden" name="plan_id" value="${planId}">
+      
+    `;
+    document.body.appendChild(form);
+    form.submit();
+  }
 };
 
-let currentAmount = options.amount;
-
+// State variables
+let currentAmount = Math.round({{ current_membership.price|floatformat:"2" }} * 100);
+let currentOrderId = "{{ payment_details.id }}";
 const memberships = {{ memberships_json|safe }};
-document.getElementById('membership-select').addEventListener('change', function() {
-    const selectedId = this.value;
-    const membership = memberships.find(m => m.id == selectedId || m.id == parseInt(selectedId));
-    if (membership) {
-        document.getElementById('membership-name').textContent = "Membership: " + membership.name;
-        document.getElementById('membership-description').textContent = "Description: " + membership.description;
-        document.getElementById('membership-price').textContent = membership.price;
-        // Update perks
-        const perksList = document.getElementById('membership-perks');
-        perksList.innerHTML = '';
-        membership.perks.forEach(function(perk) {
-            const li = document.createElement('li');
-            li.textContent = perk;
-            perksList.appendChild(li);
-        });
 
-        // Update the amount (convert to paise if needed)
-        currentAmount = parseInt(membership.price * 100);
-        // Update button text
-        document.querySelector('.purchase-btn').textContent = "Purchase Membership " + membership.name + " : ₹ " + membership.price;
-    }
-});
+// Handle membership selection changes
+{% comment %} document.getElementById('membership-select').addEventListener('change', function() {
+  const selectedId = parseInt(this.value, 10);
+  const membership = memberships.find(m => m.id === selectedId);
+  if (!membership) return;
 
-document.getElementById('rzp-button1').onclick = function(e){
-    // Set the updated amount before opening Razorpay
-    options.amount = currentAmount;
-    var rzp1 = new Razorpay(options);
-    rzp1.open();
-    e.preventDefault();
-}
+  // Update UI
+  document.getElementById('membership-name').textContent = "Membership: " + membership.name;
+  document.getElementById('membership-description').textContent = "Description: " + membership.description;
+  document.getElementById('membership-price').textContent = membership.price;
+  document.getElementById('price-summary-amount').textContent = membership.price;
+  document.getElementById('purchase-btn').textContent = `Purchase Membership ${membership.name} : ₹ ${membership.price}`;
+  document.getElementById('selected-plan-id').value = membership.id;
+
+  // Update perks
+  const perksList = document.getElementById('membership-perks');
+  perksList.innerHTML = "";
+  membership.perks.forEach(perk => {
+    const li = document.createElement('li');
+    li.textContent = perk;
+    perksList.appendChild(li);
+  });
+
+  // Update current amount
+  currentAmount = Math.round(membership.price * 100);
+
+  // Fetch a new Razorpay order (async, non-blocking)
+  fetch(`/membership/create-order/${membership.id}/`)
+    .then(res => res.json())
+    .then(data => {
+      options.amount = currentAmount;
+      options.order_id = data.order_id;
+      currentOrderId = data.order_id;
+    });
+}); {% endcomment %}
+ document.getElementById('membership-select').addEventListener('change', function () {
+  const selectedId = parseInt(this.value, 10);
+  if (!selectedId) return;
+  window.location.href = `/checkout/?membership_id=${selectedId}`;
+}); 
 
 
-
-
+// Open Razorpay on button click
+document.getElementById('purchase-btn').onclick = function (e) {
+  e.preventDefault();
+  options.amount = currentAmount;
+  options.order_id = currentOrderId;
+  const rzp = new Razorpay(options);
+  rzp.open();
+};
 </script>
+<script src='{% static "js/membership.js" %}'></script>
+
 {% endblock js %}

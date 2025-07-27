@@ -363,6 +363,26 @@
     margin-bottom: 10px;
     object-fit: contain;
   }
+
+.center-message-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.message-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+
+
   
   /* Testimonials */
 .testimonials {
@@ -436,12 +456,25 @@
     color: #c87d30;
   }
   
-  .social-links {
+.not-eligible-message {
+  background-color: #fff0f0;
+  border: 1px solid #ffb3b3;
+  color: #c0392b;
+  padding: 1rem;
+  margin: 2rem auto;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+
+
+.social-links {
     display: flex;
     margin-top: 15px;
-  }
+}
   
-  .social-links a {
+.social-links a {
     display: flex;
     width: 40px;
     height: 40px;

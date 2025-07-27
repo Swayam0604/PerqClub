@@ -8,45 +8,55 @@ Memberships{% endblock %}
     <h2 class="section-title">Membership Plans</h2>
     <div class="accent-line"></div>
   </div>
+{% if user.is_authenticated and not user.is_cafe %}
   <div class="membership-container">
     {% for plan in plans %}
-    <div
-      class="membership-card {% if plan.is_most_popular %}best-value{% endif %}"
-    >
-      {% if plan.is_most_popular %}
-      <div class="popular-tag">Most Popular</div>
-      {% endif %}
-      <div class="card-content">
-        <h2 class="plan-name">{{plan.name}}</h2>
-        <div class="price">₹{{plan.price}} <span>/Month</span></div>
-        <p class="description">{{plan.description}}</p>
-        <div class="benefits">
-          {% for feature in plan.features.all %}
-          <div class="benefit-item">
-            <span class="checkmark">✓</span>
-            <span>{{feature.feature_text}}</span>
+      <div class="membership-card {% if plan.is_most_popular %}best-value{% endif %}">
+        {% if plan.is_most_popular %}
+          <div class="popular-tag">Most Popular</div>
+        {% endif %}
+        <div class="card-content">
+          <h2 class="plan-name">{{ plan.name }}</h2>
+          <div class="price">₹{{ plan.price }} <span>/Month</span></div>
+          <p class="description">{{ plan.description }}</p>
+          <div class="benefits">
+            {% for feature in plan.features.all %}
+              <div class="benefit-item">
+                <span class="checkmark">✓</span>
+                <span>{{ feature.feature_text }}</span>
+              </div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="action-btn-container">
+            <a href="{% url 'membership_checkout' %}" class="btn btn-filled action-btn">
+              Get Your Membership
+            </a>
+          </div>
+        </form>
       </div>
-      {% if user.is_authenticated %}
-      <form action="" method="post">
-        {% csrf_token %}
-        <div class="action-btn-container">
-          <a
-            href="{% url 'membership_checkout' %}"
-            class="btn btn-filled action-btn"
-          >
-            Get Your Membership
-          </a>
-        </div>
-      </form>
-      {% else %}
-      <a href="{% url 'login_user' %}">Log in to Subscribe</a>
-      {% endif %}
-    </div>
-    {% endfor%}
+    {% endfor %}
   </div>
+
+{% elif user.is_authenticated and user.is_cafe %}
+  <div class="membership-container center-message-box">
+    <div class="message-card">
+      <p class="not-eligible-message">
+        Memberships are only available to regular users, not café accounts.
+      </p>
+    </div>
+  </div>
+
+{% else %}
+  <div class="membership-container center-login-button ">
+    <a href="{% url 'login_user' %}" class="btn btn-filled action-btn" style="width: 25%;">Log in to View Membership Plans</a>
+  </div>
+{% endif %}
+
+
+
 </div>
 <section class="testimonials" id="testimonials">
   <div class="section-header">
