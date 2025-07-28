@@ -71,12 +71,9 @@
       </div>
     </div>
 
-    
     <!-- Hidden fields for CSRF and selected plan -->
     <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
     <input type="hidden" id="selected-plan-id" name="plan_id" value="{{ current_membership.id }}">
-
-    <h1>{{ current_membership.id }}</h1>
 
     <!-- Razorpay Trigger Button -->
     <button id="purchase-btn"
@@ -88,32 +85,25 @@
 {% endblock content %}
 
 {% block js %}
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
- <script>
-// Initial Razorpay options - amount in paise (integer)
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
 const options = {
-  key: "rzp_test_hcUZ2CWTYvHDpF", // Your Razorpay test key
-  amount: Math.round({{ current_membership.price|floatformat:"2" }} * 100), // Convert rupees to paise safely
+  key: "rzp_test_hcUZ2CWTYvHDpF",
+  amount: Math.round({{ current_membership.price|floatformat:"2" }} * 100),
   currency: "INR",
   name: "PerqClub",
   description: "Membership Payment",
-  order_id: "{{ payment_details.id }}", // Razorpay order ID from backend
+  order_id: "{{ payment_details.id }}",
   prefill: {
-    name: "Gaurav Kumar",
-    email: "gaurav.kumar@example.com",
-    contact: "9000090000"
+    name: "{{ request.user.get_full_name|default:request.user.username }}",
+    email: "{{ request.user.email }}",
+    contact: "{{ request.user.phone_number|default:'' }}"
   },
   notes: { address: "PerqClub Office" },
   theme: { color: "#3399cc" },
-  
-  // Handler after successful payment capture
   handler: function(response) {
     const csrfToken = document.getElementById("csrf-token").value;
     const planId = document.getElementById("selected-plan-id").value;
-
-    console.log(planId)
-
-    // Construct a form to POST payment data securely back to your server
     const form = document.createElement("form");
     form.method = "POST";
     form.action = "/membership/payment/success/";
@@ -123,20 +113,20 @@ const options = {
       <input type="hidden" name="razorpay_order_id" value="${response.razorpay_order_id}">
       <input type="hidden" name="razorpay_signature" value="${response.razorpay_signature}">
       <input type="hidden" name="plan_id" value="${planId}">
-      
     `;
     document.body.appendChild(form);
     form.submit();
   }
 };
 
-// State variables
 let currentAmount = Math.round({{ current_membership.price|floatformat:"2" }} * 100);
 let currentOrderId = "{{ payment_details.id }}";
 const memberships = {{ memberships_json|safe }};
+let isOrderReady = true;
 
-// Handle membership selection changes
-{% comment %} document.getElementById('membership-select').addEventListener('change', function() {
+document.getElementById('membership-select').addEventListener('change', function() {
+  isOrderReady = false;
+  document.getElementById('purchase-btn').disabled = true;
   const selectedId = parseInt(this.value, 10);
   const membership = memberships.find(m => m.id === selectedId);
   if (!membership) return;
@@ -161,25 +151,21 @@ const memberships = {{ memberships_json|safe }};
   // Update current amount
   currentAmount = Math.round(membership.price * 100);
 
-  // Fetch a new Razorpay order (async, non-blocking)
+  // Fetch a new Razorpay order
   fetch(`/membership/create-order/${membership.id}/`)
     .then(res => res.json())
     .then(data => {
       options.amount = currentAmount;
       options.order_id = data.order_id;
       currentOrderId = data.order_id;
+      isOrderReady = true;
+      document.getElementById('purchase-btn').disabled = false;
     });
-}); {% endcomment %}
- document.getElementById('membership-select').addEventListener('change', function () {
-  const selectedId = parseInt(this.value, 10);
-  if (!selectedId) return;
-  window.location.href = `/checkout/?membership_id=${selectedId}`;
-}); 
+});
 
-
-// Open Razorpay on button click
 document.getElementById('purchase-btn').onclick = function (e) {
   e.preventDefault();
+  if (!isOrderReady) return;
   options.amount = currentAmount;
   options.order_id = currentOrderId;
   const rzp = new Razorpay(options);

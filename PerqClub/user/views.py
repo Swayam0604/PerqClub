@@ -130,37 +130,69 @@ def logout_view(request):
     messages.success(request, "You have been successfully logged out.")
     return redirect('login_user')
 
-# @login_required  # optional but recommended to protect profile access
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash, get_user_model
+from django.shortcuts import render, redirect
+from .forms import UserProfileForm
+from booking.models import Booking
+from cafe.models import CafeReview
+from membership.models import UserMembership
+from cafe.models import Cafe
+
+User = get_user_model()
+
+@login_required
 def profile(request):
     user = request.user
     membership = UserMembership.objects.filter(user=user).order_by('-is_active', '-end_date').first()
 
-    user_count = None  # Default value
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, instance=user)
+        password_form = PasswordChangeForm(user, request.POST)
 
+        if profile_form.is_valid() and (not request.POST.get('old_password') or password_form.is_valid()):
+            profile_form.save()
+
+            if request.POST.get('old_password'):
+                user = password_form.save()
+                update_session_auth_hash(request, user)
+
+            messages.success(request, "Profile updated successfully.")
+            return redirect('profile')
+    else:
+        profile_form = UserProfileForm(instance=user)
+        password_form = PasswordChangeForm(user)
+
+    # Stats based on role
     if user.is_superuser:
         bookings_count = Booking.objects.count()
         reviews_count = CafeReview.objects.count()
         memberships_count = UserMembership.objects.count()
         cafes_count = Cafe.objects.count()
-        user_count = get_user_model().objects.count()
-    elif hasattr(user, 'is_cafe') and user.is_cafe:
+        user_count = User.objects.count()
+    elif user.is_cafe:
         cafes = Cafe.objects.filter(manager=user)
         bookings_count = Booking.objects.filter(cafe__in=cafes).count()
         reviews_count = CafeReview.objects.filter(cafe__in=cafes).count()
         memberships_count = 0
         cafes_count = cafes.count()
+        user_count = None
     else:
         bookings_count = Booking.objects.filter(user=user).count()
         reviews_count = CafeReview.objects.filter(user=user).count()
         memberships_count = UserMembership.objects.filter(user=user).count()
         cafes_count = 0
+        user_count = None
 
     return render(request, 'profile.html', {
-        'user_count': user_count,
+        'form': profile_form,
+        'password_form': password_form,
         'membership': membership,
         'bookings_count': bookings_count,
         'reviews_count': reviews_count,
         'memberships_count': memberships_count,
         'cafes_count': cafes_count,
+        'user_count': user_count,
     })
-

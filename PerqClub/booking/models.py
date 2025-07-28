@@ -8,6 +8,8 @@ class Booking(models.Model):
     time = models.TimeField()
     people = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')], default='pending')
+
 
     def __str__(self):
         return f"{self.cafe.cafe_name} - {self.date} {self.time} ({self.people} people)"

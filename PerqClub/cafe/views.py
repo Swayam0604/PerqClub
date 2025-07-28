@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from cafe.models import Cafe
 # Create your views here.
 from django.shortcuts import render, redirect
@@ -22,6 +22,8 @@ from datetime import datetime, timedelta
 from booking.forms import BookingForm
 from django.contrib import messages
 from datetime import date
+from django.core.mail import send_mail
+from django.conf import settings
 
 def get_time_slots(opening, closing, interval=60):
     slots = []
@@ -204,17 +206,48 @@ class CafeDetailWithReviewsView( View):
                 pass
 
         elif 'submit_booking' in request.POST:
-            print(booking_form.is_valid())
             if booking_form.is_valid():
                 booking = booking_form.save(commit=False)
                 booking.cafe = cafe
                 booking.user = request.user
                 booking.save()
-                messages.success(request, "Your booking was submitted successfully!")
-                return redirect('booking_list')  # <-- CHANGE THIS LINE
-            else:
-                # ... handle booking form errors ...
-                pass
+
+            # ✅ Try sending email
+                try:
+                    subject = f"Booking Confirmation for {cafe.cafe_name}"
+                    message = f"""
+                    Hi {request.user.first_name},
+
+                    Your booking at {cafe.cafe_name} has been confirmed.
+                    Details:
+                    - Date: {booking.date}
+                    - Time: {booking.time}
+                    - People: {booking.people}
+                    - Location: {cafe.cafe_address}
+
+                    Thank you for choosing us!
+                    """
+
+                    send_mail(
+                        subject=subject,
+                        message=message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[request.user.email],
+                        fail_silently=False,  # This lets exceptions be raised
+                    )
+
+                    messages.success(request, "Your booking was submitted successfully, and a confirmation email has been sent!")
+
+                except Exception as e:
+                # Log error or notify admin if needed
+                    print(f"Email sending failed: {e}")
+                    messages.warning(request, "Your booking was submitted, but we couldn't send the confirmation email. Please check your booking list.")
+
+                return redirect('booking_list')
+
+        else:
+            messages.error(request, "There was an error in your booking form. Please correct the fields below.")
+
 
         # If neither form was submitted or there was an error, re-render the page with the form errors.
         reviews = CafeReview.objects.filter(cafe=cafe).order_by('-date_posted')

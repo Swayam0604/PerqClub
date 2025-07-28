@@ -45,3 +45,14 @@ class LoginForm(forms.Form):
             self.add_error('username', "Please enter both username and password")
 
    
+from django import forms
+from django.contrib.auth.models import User
+from .models import CustomUser  # If you're using a custom profile model
+from django.contrib.auth.forms import PasswordChangeForm
+
+class UserProfileForm(forms.ModelForm):
+    phone_number = forms.CharField(required=False, max_length=15)
+
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']

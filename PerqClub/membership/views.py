@@ -14,6 +14,7 @@ from django.http import HttpResponseBadRequest,HttpResponseForbidden,JsonRespons
 from django.contrib.auth.decorators import login_required
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
+from django.core.mail import send_mail
 
 
 @login_required
@@ -122,6 +123,14 @@ def membership_payment_success(request):
     except SignatureVerificationError:
         payment_status = 'failed'
         PaymentRecord.objects.filter(order_id=razorpay_order_id).update(status='failed')
+        # Send failure email
+        send_mail(
+            subject="Membership Purchase Failed",
+            message=f"Dear {request.user.get_full_name() or request.user.username},\n\nYour membership payment for {plan.name} failed. Please try again or contact support.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[request.user.email],
+            fail_silently=True,
+        )
         return render(request, "payment_failed.html")
 
     payment_record, created = PaymentRecord.objects.get_or_create(
@@ -178,6 +187,15 @@ def membership_payment_success(request):
                 end_date=today + relativedelta(months=duration),
                 is_active=True
             )
+
+    # Send success email
+    send_mail(
+        subject="Membership Purchase Successful",
+        message=f"Dear {request.user.get_full_name() or request.user.username},\n\nYour membership for {plan.name} has been activated successfully.\nThank you for your purchase!",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[request.user.email],
+        fail_silently=True,
+    )
 
     return render(request, "payment_success.html")
 

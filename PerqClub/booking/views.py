@@ -33,6 +33,36 @@ def booking_list(request):
         bookings = Booking.objects.all().order_by('-date', '-time')
     else:
         bookings = Booking.objects.filter(user=request.user).order_by('-date', '-time')
-    return render(request, 'bookings-list.html', {'bookings': bookings})
+    cafe = bookings.first().cafe if bookings.exists() else None
+    return render(request, 'bookings-list.html', {'bookings': bookings,'cafe': cafe})
 
+from django.core.mail import send_mail
+from django.conf import settings  # to get DEFAULT_FROM_EMAIL
+from django.contrib.auth.decorators import user_passes_test, login_required
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+@login_required
+def update_booking_status(request, booking_id):
+    if request.method == 'POST':
+        booking = get_object_or_404(Booking, id=booking_id)
+        status = request.POST.get('status')
 
+        if status in ['accepted', 'rejected']:
+            booking.status = status
+            booking.save()
+            messages.success(request, f'Booking marked as {status}.')
+
+            # Send email notification
+            subject = f"Your booking has been {status}"
+            message = (
+                f"Hello {booking.user.first_name or booking.user.username},\n\n"
+                f"Your booking at '{booking.cafe.cafe_name}' on {booking.date} at {booking.time.strftime('%I:%M %p')} "
+                f"has been {status.upper()}.\n\n"
+                "Thank you for using our service.\n\n"
+                "Best regards,\nCafe Team"
+            )
+            recipient_list = [booking.user.email]
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
+        else:
+            messages.error(request, 'Invalid status value.')
+
+    return redirect('booking_list')
