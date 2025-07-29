@@ -196,3 +196,56 @@ def profile(request):
         'cafes_count': cafes_count,
         'user_count': user_count,
     })
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+
+from .forms import ContactForm
+from .models import ContactMessage
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            # Save message to database
+            ContactMessage.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                name=data['name'],
+                email=data['email'],
+                subject=data['subject'],
+                message=data['message'],
+            )
+
+            # Send email to admin
+            subject = f"New Contact Form Submission: {data['subject']}"
+            message = (
+                f"Name: {data['name']}\n"
+                f"Email: {data['email']}\n"
+                f"Subject: {data['subject']}\n"
+                f"Message:\n{data['message']}\n"
+                f"Submitted by: {request.user.username if request.user.is_authenticated else 'Anonymous'}"
+            )
+            admin_email = settings.DEFAULT_FROM_EMAIL
+            send_mail(subject, message, data['email'], [admin_email])
+
+            # Show success message and redirect
+            messages.success(request, "Your message has been sent successfully!")
+            return redirect('contact')
+
+    else:
+        if request.user.is_authenticated:
+            initial_data = {
+                'name': request.user.get_full_name(),
+                'email': request.user.email,
+            }
+            form = ContactForm(initial=initial_data)
+            form.fields['name'].widget.attrs['readonly'] = True
+            form.fields['email'].widget.attrs['readonly'] = True
+        else:
+            form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})

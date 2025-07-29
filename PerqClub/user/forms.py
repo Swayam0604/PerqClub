@@ -56,3 +56,19 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
+
+
+# forms.py
+from django import forms
+
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    subject = forms.ChoiceField(choices=[
+        ('general', 'General Inquiry'),
+        ('membership', 'Membership Question'),
+        ('event', 'Event Booking'),
+        ('feedback', 'Feedback'),
+    ])
+    message = forms.CharField(widget=forms.Textarea)
+    

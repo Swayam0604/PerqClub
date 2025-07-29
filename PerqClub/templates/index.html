@@ -13,7 +13,7 @@
       <!-- Slide 1 -->
       <div class="hero-slide active">
         <img
-          src="{% static "img/cafe-hero-section-img-1.png" %}"
+          src="{% static 'img/cafe-hero-section-img-1.png' %}"
           alt="Coffee shop interior"
           class="slide-image"
         />
@@ -25,7 +25,7 @@
             free coffee, exclusive discounts, and join a community of coffee
             lovers.
           </p>
-          <button class="slide-button">Get Your Membership ₹299</button>
+          <button class="slide-button"><a href="{% url 'membership' %}">Get Your Membership ₹499</a></button>
         </div>
       </div>
 
@@ -44,7 +44,7 @@
             Enjoy a free cup of premium coffee daily at our partner cafés.
             Experience different roasts and brewing methods from top baristas.
           </p>
-          <button class="slide-button">Start Your Journey</button>
+          <button class="slide-button"><a href="{% url 'cafe_list' %}">Start Your Journey</a></button>
         </div>
       </div>
 
@@ -57,13 +57,12 @@
         />
         <div class="overlay"></div>
         <div class="slide-content">
-          <h1 class="slide-title">Join Our Coffee Community</h1>
+          <h1 class="slide-title">Know More About Us</h1>
           <p class="slide-description">
             Connect with fellow coffee enthusiasts, attend exclusive tasting
-            events, and learn from expert workshops. All included in your
-            membership.
+            events, and learn from expert workshops.
           </p>
-          <button class="slide-button">Become a Member</button>
+          <button class="slide-button"><a href="{% url 'About-us' %}">Know More About Us</a></button>
         </div>
       </div>
     </div>
@@ -88,7 +87,7 @@
         <div class="step-number">1</div>
         <h3>Purchase Your Membership</h3>
         <p>
-          Sign up for PerqClub membership for just ₹299 and get immediate access to
+          Sign up for PerqClub membership for just ₹499 and get immediate access to
           your digital membership card.
         </p>
       </div>
@@ -127,7 +126,7 @@
       {% endfor %}
     </div>
      <div class="view-all-button">
-      <a href="../templates/cafes.html" class="cta-button">View All Partner Cafés</a>
+      <a href="{% url 'cafe_list' %}" class="cta-button">View All Partner Cafés</a>
     </div>
   </div>
 </section>
@@ -143,7 +142,7 @@
         <h3>Monthly PerqClub Membership</h3>
         <div class="price">₹500 <span>/Month</span></div>
         <p>Perfect for casual coffee lovers looking for great value.</p>
-        <a href="../templates/membership.html" class="cta-button"
+        <a href="{% url 'membership' %}" class="cta-button"
           >Get Your Membership</a
         >
       </div>
@@ -152,7 +151,7 @@
         <h3>Monthly PerqClub Membership</h3>
         <div class="price">₹1000 <span>/Month</span></div>
         <p>Unlock premium perks and bigger savings for coffee enthusiasts.</p>
-        <a href="../templates/membership.html" class="cta-button"
+        <a href="{% url 'membership' %}" class="cta-button"
           >Get Your Membership</a
         >
       </div>
@@ -161,7 +160,7 @@
         <h3>Monthly PerqClub Membership</h3>
         <div class="price">₹1200 <span>/Month</span></div>
         <p>The ultimate coffee experience with exclusive benefits.</p>
-        <a href="../templates/membership.html" class="cta-button"
+        <a href="{% url 'membership' %}" class="cta-button"
           >Get Your Membership</a
         >
       </div>
@@ -262,7 +261,7 @@
           Track your café visits, earn rewards, and discover new partner
           locations all in one place. Making your coffee exploration simple!!
         </p>
-        <a href="#contact" class="cta-button get-notified">Get Notified</a>
+        <!-- <a href="#contact" class="cta-button get-notified">Get Notified</a> -->
       </div>
       <div class="app-image">
         <img
@@ -299,9 +298,9 @@
     <h2>Ready to Start Your Coffee Adventure?</h2>
     <p>
       Join PerqClub today and unlock 20+ free coffees plus exclusive benefits
-      for just ₹299/Month.
+      for just ₹499/Month.
     </p>
-    <a href="../templates/signup.html" class="cta-button">Sign Up Now</a>
+    <a href="{% url 'register_user' %}" class="cta-button">Sign Up Now</a>
   </div>
 </section>
 {% endblock content %}
