@@ -48,44 +48,6 @@ def cafe(request):
 
 
 
-
-
-# def register_cafe_view(request):
-#     if request.method == 'POST':
-#         print(request.FILES)  # <-- Add this line here
-#         form = CafeForm(request.POST, request.FILES)
-#         image_formset = CafeImageFormSet(request.POST, request.FILES)
-#         highlight_formset = CafeHighlightFormSet(request.POST)
-
-#         if form.is_valid() and image_formset.is_valid() and highlight_formset.is_valid():
-#             cafe = form.save()
-
-#             for image_form in image_formset:
-#                 print(image_form.errors)
-#                 if image_form.cleaned_data:
-#                     image = image_form.save(commit=False)
-#                     image.cafe = cafe
-#                     image.save()
-
-#             for highlight_form in highlight_formset:
-#                 if highlight_form.cleaned_data:
-#                     highlight = highlight_form.save(commit=False)
-#                     highlight.cafe = cafe
-#                     highlight.save()
-
-#             return redirect('cafes:list')  # or any success URL
-
-#     else:
-#         form = CafeForm()
-#         image_formset = CafeImageFormSet()
-#         highlight_formset = CafeHighlightFormSet()
-
-#     return render(request, 'register-cafe.html', {
-#         'form': form,
-#         'image_formset': image_formset,
-#         'highlight_formset': highlight_formset,
-#     })
-
 def registration_success_view(request):
     context ={
         'locations': CafeLocation.objects.all()
@@ -98,26 +60,59 @@ def registration_success_view(request):
 # views.py
 from django.shortcuts import render, redirect
 from .forms import CafeForm, CafeImageFormSet, CafeHighlightFormSet
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
+@login_required
 def register_cafe_view(request):
+    # Remove or modify this check - it's likely causing the redirect to home
+    # if not request.user.is_cafe:
+    #     return redirect('home')  # This might be redirecting you to home page
+    
+    # Instead, you can check if user is staff or allow all authenticated users
+    # Option 1: Allow only staff users
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, "You don't have permission to register a cafe.")
+        return redirect('home')
+    
+    # Option 2: Or allow all authenticated users (remove the above check entirely)
+    
     if request.method == 'POST':
         form = CafeForm(request.POST, request.FILES)
         image_formset = CafeImageFormSet(request.POST, request.FILES)
         highlight_formset = CafeHighlightFormSet(request.POST)
 
         if form.is_valid() and image_formset.is_valid() and highlight_formset.is_valid():
-            cafe = form.save()
+            try:
+                with transaction.atomic():  # Ensure all operations succeed or fail together
+                    cafe = form.save(commit=False)
+                    cafe.manager = request.user  # Link café to current user
+                    cafe.save()
 
-            image_formset.instance = cafe
-            image_formset.save()
+                    # Save images
+                    image_formset.instance = cafe
+                    image_formset.save()
 
-            for highlight_form in highlight_formset:
-                if highlight_form.cleaned_data:
-                    highlight = highlight_form.save(commit=False)
-                    highlight.cafe = cafe
-                    highlight.save()
+                    # Save highlights
+                    for highlight_form in highlight_formset:
+                        if highlight_form.cleaned_data and not highlight_form.cleaned_data.get('DELETE', False):
+                            highlight = highlight_form.save(commit=False)
+                            highlight.cafe = cafe
+                            highlight.save()
 
-            return redirect('cafe_list')
+                    messages.success(request, f"Cafe '{cafe.cafe_name}' has been successfully registered!")
+                    return redirect('registration_success')  # or redirect to edit_cafe with cafe.id
+
+            except Exception as e:
+                messages.error(request, f"Error registering cafe: {str(e)}")
+        else:
+            # Add form error messages
+            if not form.is_valid():
+                messages.error(request, "Please correct the errors in the cafe form.")
+            if not image_formset.is_valid():
+                messages.error(request, "Please correct the errors in the image forms.")
+            if not highlight_formset.is_valid():
+                messages.error(request, "Please correct the errors in the highlight forms.")
 
     else:
         form = CafeForm()
@@ -129,7 +124,6 @@ def register_cafe_view(request):
         'image_formset': image_formset,
         'highlight_formset': highlight_formset,
     })
-
 
 
 # --- Class-Based Views for Review Functionality ---
@@ -150,6 +144,12 @@ class CafeDetailWithReviewsView( View):
         # Retrieve the Cafe object based on the 'pk' (cafe ID) from the URL.
         cafe = get_object_or_404(Cafe, id=pk) # Use id=pk for lookup
         
+        # Get up to 3 other cafes in the same location (exclude the current cafe itself)
+        nearby_cafes = Cafe.objects.filter(location=cafe.location,is_approved=True).exclude(pk=cafe.pk)[:3]       # Only show approved ones
+
+        # Only featured reviews, ordered by most recent or as you wish (max 3)
+        best_reviews = CafeReview.objects.filter(cafe=cafe,is_featured=True).order_by('-date_posted')[:3]
+
         # Fetch all reviews related to this specific cafe, ordered by most recent first.
         reviews = CafeReview.objects.filter(cafe=cafe).order_by('-date_posted')
         
@@ -174,6 +174,8 @@ class CafeDetailWithReviewsView( View):
             'booking_form': booking_form,
             'time_slots': time_slots,
             'today': date.today().isoformat(),
+            'best_reviews': best_reviews,
+            'nearby_cafes': nearby_cafes,
         }
         # Render the template with the gathered context data.
         return render(request, self.template_name, context)
@@ -188,7 +190,9 @@ class CafeDetailWithReviewsView( View):
         booking_form = BookingForm(request.POST)
         time_slots = get_time_slots(cafe.opening_hours, cafe.closing_hours, interval=60)  # interval in minutes
 
-        
+        # At the top of `post`, after you get cafe
+        best_reviews = CafeReview.objects.filter(cafe=cafe,is_featured=True).order_by('-date_posted')[:3]
+        nearby_cafes = Cafe.objects.filter(location=cafe.location, is_approved=True).exclude(pk=cafe.pk)[:3]
         # Check which form was submitted (you can use a hidden field or button name in your template)
         if 'submit_review' in request.POST:
             if not request.user.is_authenticated:
@@ -266,6 +270,8 @@ class CafeDetailWithReviewsView( View):
             'booking_form': booking_form,
             'time_slots': time_slots,
             'today': date.today().isoformat(),
+            'best_reviews': best_reviews,
+            'nearby_cafes': nearby_cafes,
         }
         return render(request, self.template_name, context)
 

@@ -76,9 +76,9 @@ class CafeReviewAdmin(admin.ModelAdmin):
     """
     list_display = (
         'cafe', 'user', 'rating', 'comment_snippet',
-        'date_posted', 'helpful_count', 'has_reply'
+        'date_posted', 'helpful_count', 'has_reply', 'is_featured'
     )
-    list_filter = ('cafe', 'rating', 'date_posted')
+    list_filter = ('cafe', 'rating', 'date_posted','is_featured')
     search_fields = ('comment', 'user__username', 'cafe__cafe_name')
     readonly_fields = ('date_posted', 'helpful_count') # These are typically auto-set or managed by interaction
     
@@ -96,7 +96,7 @@ class CafeReviewAdmin(admin.ModelAdmin):
     # Define the fields order and grouping for the detail view in the admin
     fieldsets = (
         (None, {
-            'fields': ('cafe', 'user', 'rating', 'comment')
+            'fields': ('cafe', 'user', 'rating', 'comment','is_featured')
         }),
         ('Admin Actions', {
             'fields': ('reply', 'helpful_count'),

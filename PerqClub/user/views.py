@@ -132,70 +132,80 @@ def logout_view(request):
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash, get_user_model
-from django.shortcuts import render, redirect
-from .forms import UserProfileForm
+from django.shortcuts import render, redirect, get_object_or_404
 from booking.models import Booking
-from cafe.models import CafeReview
+from cafe.models import CafeReview, Cafe
 from membership.models import UserMembership
-from cafe.models import Cafe
+from django.contrib.auth import get_user_model
+from .forms import UserProfileForm
 
-User = get_user_model()
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from cafe.models import Cafe, CafeReview
+from booking.models import Booking
+from user.models import CustomUser
+
+
+
+
 
 @login_required
 def profile(request):
     user = request.user
-    membership = UserMembership.objects.filter(user=user).order_by('-is_active', '-end_date').first()
 
-    if request.method == 'POST':
-        profile_form = UserProfileForm(request.POST, instance=user)
-        password_form = PasswordChangeForm(user, request.POST)
+    # Count user-specific data
+    bookings_count = Booking.objects.filter(user=user).count()
+    reviews_count = CafeReview.objects.filter(user=user).count()
 
-        if profile_form.is_valid() and (not request.POST.get('old_password') or password_form.is_valid()):
-            profile_form.save()
-
-            if request.POST.get('old_password'):
-                user = password_form.save()
-                update_session_auth_hash(request, user)
-
-            messages.success(request, "Profile updated successfully.")
-            return redirect('profile')
-    else:
-        profile_form = UserProfileForm(instance=user)
-        password_form = PasswordChangeForm(user)
-
-    # Stats based on role
-    if user.is_superuser:
-        bookings_count = Booking.objects.count()
-        reviews_count = CafeReview.objects.count()
-        memberships_count = UserMembership.objects.count()
-        cafes_count = Cafe.objects.count()
-        user_count = User.objects.count()
-    elif user.is_cafe:
-        cafes = Cafe.objects.filter(manager=user)
-        bookings_count = Booking.objects.filter(cafe__in=cafes).count()
-        reviews_count = CafeReview.objects.filter(cafe__in=cafes).count()
-        memberships_count = 0
-        cafes_count = cafes.count()
-        user_count = None
-    else:
-        bookings_count = Booking.objects.filter(user=user).count()
-        reviews_count = CafeReview.objects.filter(user=user).count()
-        memberships_count = UserMembership.objects.filter(user=user).count()
-        cafes_count = 0
-        user_count = None
-
-    return render(request, 'profile.html', {
-        'form': profile_form,
-        'password_form': password_form,
-        'membership': membership,
+    context = {
         'bookings_count': bookings_count,
         'reviews_count': reviews_count,
-        'memberships_count': memberships_count,
-        'cafes_count': cafes_count,
-        'user_count': user_count,
-    })
+        'membership': None,  # Placeholder in case template still references it
+    }
+
+    # For superuser: Admin stats
+    if user.is_superuser:
+        context.update({
+            'cafes_count': Cafe.objects.count(),
+            'user_count': CustomUser.objects.count(),
+            'memberships_count': 0,  # No membership model, so set to 0
+            'all_cafes': Cafe.objects.all(),
+        })
+
+    return render(request, 'profile.html', context)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated.")
+            return redirect('edit_profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    return render(request, 'edit_profile.html', {'form': form})
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed.")
+            return redirect('change_password')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'change_password.html', {'form': form})
+
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -249,3 +259,149 @@ def contact_view(request):
             form = ContactForm()
 
     return render(request, 'contact.html', {'form': form})
+
+# from django.contrib.auth.decorators import login_required
+# from django.contrib.auth import logout
+# from django.shortcuts import render, redirect
+
+# @login_required
+# def delete_user(request):
+#     if request.method == "POST":
+#         user = request.user
+#         user.delete()  # Delete the user
+#         logout(request)  # Log out after deletion
+#         return redirect("login")  # Redirect to login page
+
+#     # On GET, show confirmation page
+#     return render(request, "accounts/delete_confirm.html")
+
+# views.py
+
+from cafe.forms import CafeForm, CafeImageFormSet, CafeHighlightFormSet, AdminCafeForm
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+# Add these imports at the top of your views.py file
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from cafe.forms import CafeForm, CafeImageFormSet, CafeHighlightFormSet, AdminCafeForm
+from cafe.models import Cafe
+
+@login_required
+def edit_cafe(request):
+    print(">>> edit_cafe view triggered")
+
+    # 1) Which cafes can this user see?
+    if request.user.is_superuser:
+        all_cafes = Cafe.objects.all()
+    else:
+        all_cafes = request.user.cafes.all()
+
+    # 2) Grab the GET parameter
+    cafe_id = request.GET.get('cafe_id')
+    print(f">>> Received cafe_id: {cafe_id}")
+
+    # 2a) If user clicked "+ Add New Café" in the dropdown:
+    if cafe_id == 'add':
+        print(">>> Redirecting to register_cafe")
+        return redirect('register_cafe')
+
+    # 3) If they picked a real cafe_id, load it (or 404)
+    cafe = None
+    if cafe_id:
+        try:
+            cafe = get_object_or_404(Cafe, pk=cafe_id)
+            print(f">>> Found cafe: {cafe.cafe_name}")
+            # permission check
+            if not request.user.is_superuser and cafe not in all_cafes:
+                messages.error(request, "You don't have permission to edit this cafe.")
+                return redirect('edit_cafe')  # Redirect back to edit_cafe instead of permission_denied
+        except Exception as e:
+            print(f">>> Error finding cafe: {e}")
+            messages.error(request, "Cafe not found.")
+            return redirect('edit_cafe')
+
+    # 4) If no cafe chosen yet, show only the selector dropdown
+    if not cafe:
+        print(">>> No cafe selected, showing dropdown only")
+        return render(request, 'edit_cafe.html', {
+            'all_cafes': all_cafes,
+            'cafe': None,
+        })
+
+    # 5) Decide which form class for details
+    FormClass = CafeForm if request.user.is_superuser else CafeForm
+
+    # 6) Handle POST vs GET
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+        print(f">>> POST form_type: {form_type}")
+
+        cafe_form = FormClass(request.POST, instance=cafe)
+        image_formset = CafeImageFormSet(
+            request.POST, request.FILES,
+            instance=cafe,
+            prefix='images',
+            form_kwargs={'image_required': False}
+        )
+        highlight_formset = CafeHighlightFormSet(
+            request.POST, instance=cafe,
+            prefix='highlights'
+        )
+
+        # 6a) Update only café details
+        if form_type == 'cafe':
+            if cafe_form.is_valid():
+                cafe_form.save()
+                messages.success(request, "Cafe details updated.")
+                return redirect(f"{reverse('edit_cafe')}?cafe_id={cafe.id}")
+            else:
+                print("Cafe form errors:", cafe_form.errors)
+                messages.error(request, "Please correct the errors in cafe details.")
+
+        # 6b) Update only images
+        elif form_type == 'images':
+            if image_formset.is_valid():
+                image_formset.save()
+                messages.success(request, "Cafe images updated.")
+                return redirect(f"{reverse('edit_cafe')}?cafe_id={cafe.id}")
+            else:
+                print("Image formset errors:", image_formset.errors)
+                messages.error(request, "Please correct the errors in cafe images.")
+
+        # 6c) Update only highlights
+        elif form_type == 'highlights':
+            if highlight_formset.is_valid():
+                highlight_formset.save()
+                messages.success(request, "Cafe highlights updated.")
+                return redirect(f"{reverse('edit_cafe')}?cafe_id={cafe.id}")
+            else:
+                print("Highlight formset errors:", highlight_formset.errors)
+                messages.error(request, "Please correct the errors in cafe highlights.")
+
+    else:
+        # 7) GET: instantiate unbound forms/formsets
+        cafe_form = FormClass(instance=cafe)
+        image_formset = CafeImageFormSet(
+            instance=cafe,
+            prefix='images',
+            form_kwargs={'image_required': False}
+        )
+        highlight_formset = CafeHighlightFormSet(
+            instance=cafe,
+            prefix='highlights'
+        )
+
+    # 8) Render everything
+    print(f">>> Rendering template with cafe: {cafe.cafe_name if cafe else 'None'}")
+    return render(request, 'edit_cafe.html', {
+        'all_cafes': all_cafes,
+        'cafe': cafe,
+        'cafe_form': cafe_form,
+        'image_formset': image_formset,
+        'highlight_formset': highlight_formset,
+    })

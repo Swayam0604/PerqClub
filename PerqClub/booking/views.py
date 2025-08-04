@@ -66,3 +66,43 @@ def update_booking_status(request, booking_id):
             messages.error(request, 'Invalid status value.')
 
     return redirect('booking_list')
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Booking
+
+@login_required
+@require_POST
+def user_cancel_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    if booking.status in ['pending', 'accepted']:
+        booking.status = 'cancelled'
+        booking.save()
+        
+        # Email to the user
+        user_subject = f"Booking Cancelled for {booking.cafe.cafe_name}"
+        user_message = (
+            f"Hello {booking.user.first_name or booking.user.username},\n\n"
+            f"Your booking at '{booking.cafe.cafe_name}' on {booking.date} at {booking.time.strftime('%I:%M %p')} "
+            "has been cancelled as per your request.\n\n"
+            "Best regards,\nPerqClub Team"
+        )
+
+        try:
+            send_mail(
+                user_subject,
+                user_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [booking.user.email]
+            )
+            messages.success(request, "Your booking has been cancelled and a confirmation email has been sent to you.")
+        except Exception as e:
+            messages.warning(request, "Booking cancelled, but an error occurred while sending the confirmation email.")
+
+    else:
+        messages.warning(request, "This booking cannot be cancelled.")
+
+    return redirect('booking_list')

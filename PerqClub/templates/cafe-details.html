@@ -211,120 +211,62 @@ Cafes-details{% endblock %} {% block css %}
 
       <div class="container">
         <div class="reviews-container">
-          <div class="review-card">
-            <div class="review-header">
-              <div class="reviewer-img">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                  <path
-                    fill="#7d4f2a"
-                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                  />
-                </svg>
-              </div>
-              <div class="reviewer-info">
-                <h4><!--Priya Sharma--></h4>
-                <div class="review-date"><!--2 days ago--></div>
-              </div>
-            </div>
-            <div class="review-rating">
-              <!-- <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i> -->
-            </div>
-            <p class="review-text">
-              <!--Absolutely love this place! The ambiance is perfect for working or casual catch-ups. Their cappuccino is to die for, and don't even get me started on their almond croissants. The staff is friendly, and with my membership card, I got a nice discount. Will definitely be back!-->
-            </p>
-            <div class="review-actions">
-              <button class="helpful-btn">
-                <i class="far fa-thumbs-up"></i
-                ><!-- Helpful (15)-->
-              </button>
-              <button class="helpful-btn">
-                <i class="far fa-comment"></i>
-                <!--Reply-->
-              </button>
-            </div>
+  {% if best_reviews %}
+    {% for review in best_reviews %}
+      <div class="review-card">
+        <div class="review-header">
+          <div class="reviewer-img">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path fill="#7d4f2a"
+                d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"/>
+            </svg>
           </div>
-
-          <div class="review-card">
-            <div class="review-header">
-              <div class="reviewer-img">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                  <path
-                    fill="#7d4f2a"
-                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                  />
-                </svg>
-              </div>
-              <div class="reviewer-info">
-                <h4><!--Rohit Patel--></h4>
-                <div class="review-date"><!--1 week ago--></div>
-              </div>
-            </div>
-            <div class="review-rating">
-              <!-- <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i> -->
-            </div>
-            <p class="review-text">
-              <!--Great coffee but can get a bit crowded during peak hours. I used my membership card to get a free coffee and it was a smooth experience. The baristas really know their craft. Would recommend trying their pour-over - it's exceptional!-->
-            </p>
-            <div class="review-actions">
-              <button class="helpful-btn">
-                <i class="far fa-thumbs-up"></i
-                ><!-- Helpful (7)-->
-              </button>
-              <button class="helpful-btn">
-                <i class="far fa-comment"></i>
-                <!--Reply-->
-              </button>
-            </div>
-          </div>
-
-          <div class="review-card">
-            <div class="review-header">
-              <div class="reviewer-img">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                  <path
-                    fill="#7d4f2a"
-                    d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
-                  />
-                </svg>
-              </div>
-              <div class="reviewer-info">
-                <h4><!--Aishwarya Singh--></h4>
-                <div class="review-date"><!--2 weeks ago--></div>
-              </div>
-            </div>
-            <div class="review-rating">
-              <!-- <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <i class="far fa-star"></i> -->
-            </div>
-            <p class="review-text">
-              <!--I love the vibe here! It's a perfect spot for meeting clients or getting some work done. The coffee is excellent, and they have good food options too. WiFi can be a bit spotty during busy hours, but overall a great café. The membership discount makes it even better value.-->
-            </p>
-            <div class="review-actions">
-              <button class="helpful-btn">
-                <i class="far fa-thumbs-up"></i>
-                <!--Helpful (3)-->
-              </button>
-              <button class="helpful-btn">
-                <i class="far fa-comment"></i>
-                <!--Reply-->
-              </button>
-            </div>
+          <div class="reviewer-info">
+            <h4>{{ review.user.get_full_name|default:review.user.username }}</h4>
+            <div class="review-date">{{ review.date_posted|timesince }} ago</div>
           </div>
         </div>
+        <div class="review-rating">
+          {{ review.get_star_rating_html|safe }}
+        </div>
+        <p class="review-text">
+          {{ review.comment }}
+        </p>
+        <div class="review-actions">
+          <button class="helpful-btn">
+            <i class="far fa-thumbs-up"></i>
+            Helpful ({{ review.helpful_count }})
+          </button>
+          <button class="helpful-btn">
+            <i class="far fa-comment"></i>
+            Reply
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="review-card review-card-empty">
+      <div class="review-header">
+        <div class="reviewer-img">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path fill="#7d4f2a"
+              d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"/>
+          </svg>
+        </div>
+        <div class="reviewer-info">
+          <h4>No featured reviews yet</h4>
+          <div class="review-date"></div>
+        </div>
+      </div>
+      <div class="review-rating"></div>
+      <p class="review-text">
+        Be the first to add a review!
+      </p>
+      <div class="review-actions"></div>
+    </div>
+  {% endif %}
+</div>
+
       </div>
 
       <div
@@ -426,73 +368,21 @@ Cafes-details{% endblock %} {% block css %}
       </div>
     </section>
 
-    <!-- Similar Cafes Section -->
-    <section class="similar-cafes-section">
-      <h2 class="section-title"><i class="fas fa-coffee"></i> Cafés Nearby</h2>
-      <div class="container">
-        <div class="cafes-container">
-          <div class="cafe-card">
-            <div class="cafe-card-img">
-              <img src="" alt="Cafe" />
-            </div>
-            <div class="cafe-card-content">
-              <h3 class="cafe-card-title"><!--The Coffee Library--></h3>
-              <div class="cafe-card-meta">
-                <div class="cafe-card-rating">
-                  <i class="fas fa-star"></i>
-                  <span><!--4.3--></span>
-                </div>
-                <div class="cafe-card-distance"><!--0.5 km away--></div>
-              </div>
-              <p class="cafe-card-description">
-                <!--A quiet space with books and great coffee. Perfect for the literary-minded coffee enthusiasts.-->
-              </p>
-              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
-            </div>
-          </div>
-
-          <div class="cafe-card">
-            <div class="cafe-card-img">
-              <img src="" alt="Cafe" />
-            </div>
-            <div class="cafe-card-content">
-              <h3 class="cafe-card-title"><!--Brew & Bake--></h3>
-              <div class="cafe-card-meta">
-                <div class="cafe-card-rating">
-                  <i class="fas fa-star"></i>
-                  <span><!--4.6--></span>
-                </div>
-                <div class="cafe-card-distance"><!--0.8 km away--></div>
-              </div>
-              <p class="cafe-card-description">
-                <!--Famous for their in-house bakery and specialty coffee beans from around the world.-->
-              </p>
-              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
-            </div>
-          </div>
-
-          <div class="cafe-card">
-            <div class="cafe-card-img">
-              <img src="" alt="Cafe" />
-            </div>
-            <div class="cafe-card-content">
-              <h3 class="cafe-card-title"><!--Urbdan Roasters--></h3>
-              <div class="cafe-card-meta">
-                <div class="cafe-card-rating">
-                  <i class="fas fa-star"></i>
-                  <span><!--4.4--></span>
-                </div>
-                <div class="cafe-card-distance"><!--1.2 km away--></div>
-              </div>
-              <p class="cafe-card-description">
-                <!--Modern café with a focus on single-origin coffees and contemporary food offerings.-->
-              </p>
-              <a href="#" class="btn btn-primary btn-full"><!--View Café--></a>
-            </div>
-          </div>
+   <section class="similar-cafes-section">
+  <h2 class="section-title"><i class="fas fa-coffee"></i> Cafés Nearby</h2>
+  <div class="container">
+    <div class="cafes-container">
+      {% for cafe in nearby_cafes %}
+        {% include 'cafescard.html' with c=cafe %}
+      {% empty %}
+        <div class="no-cafes-message">
+          Sorry, no other cafes nearby!
         </div>
-      </div>
-    </section>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
   </div>
 </main>
 {% endblock content %} {% block js %}

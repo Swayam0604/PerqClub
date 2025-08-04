@@ -33,7 +33,14 @@
   text-align: center;
   font-weight: bold;
 }
+.title{
+  border:var(--primary-brown) 1px solid ;
+  background-color: var(--primary-brown);
+  margin:20px 0px;
+  padding: 5px;
+  color:whitesmoke;
 
+}
 .auth-container {
   display: flex;
   width: 100%;
@@ -930,4 +937,260 @@ body {
     font-size: 0.75rem;
     padding: 0.35rem 0.4rem;
   }
+}
+
+
+/* Collapse sidebar on smaller screens */
+@media (max-width: 768px) {
+  .profile-sidebar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .profile-menu {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .profile-menu li {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+    flex-shrink: 0;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .grid-cols-1,
+  .grid-cols-2,
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .profile-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .profile-stats > div {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 576px) {
+  input,
+  button.submit-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+    width: 100%;
+  }
+
+  button.submit-btn {
+    padding: 0.7rem 1.2rem;
+  }
+}
+
+
+/* Default (large screens: desktop) */
+.profile-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #7a4b24; /* or your chosen brown */
+  color: white;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #e6be91; /* sample avatar bg */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.cafe-badge {
+  background-color: #a7d66f;
+  color: #3a3a3a;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Sidebar (Desktop) */
+.sidebar {
+  display: block;
+  text-align: left;
+  min-width: 180px;
+}
+
+/* ===========================
+   Responsive (≤ 1024px)
+=========================== */
+@media (max-width: 1024px) {
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .profile-name {
+    max-width: 90vw;
+    font-size: 16px;
+    word-break: break-word;
+  }
+
+  .cafe-badge {
+    margin-top: 0.5rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .sidebar a {
+    flex: 1 1 40%;
+    text-align: center;
+    padding: 0.5rem;
+    background: rgb(255, 255, 255);
+    border-radius: 0.25rem;
+  }
+}
+
+/* ===========================
+   Responsive (≤ 425px)
+=========================== */
+@media (max-width: 425px) {
+  .profile-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .profile-name {
+    font-size: 14px;
+  }
+
+  .cafe-badge {
+    font-size: 12px;
+    padding: 0.3rem 0.5rem;
+  }
+
+  .sidebar a {
+    flex: 1 1 100%;
+    padding: 0.4rem;
+  }
+}
+
+
+.profile-menu li button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0;
+  font-weight: 600;
+  color: #ffffff; /* Tailwind gray-700 */
+}
+
+.profile-menu li button:hover {
+  color: #b45309; /* Tailwind amber-700 */
+}
+
+.profile-menu ul li a {
+  display: block;
+  padding-left: 0.5rem;
+  color: #ffffff; /* Tailwind gray-600 */
+  text-decoration: none;
+}
+
+.profile-menu ul li a:hover {
+  color: #b45309; /* Tailwind amber-700 */
+}
+
+.profile-menu ul {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.profile-menu ul li::before {
+  content: '•';
+  margin-right: 0.3rem;
+  color: #ffffff; /* Tailwind gray-400 */
+}
+#cafes-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+#cafes-list:not(.hidden) {
+    max-height: 500px; /* Adjust based on your content */
+}
+
+
+.togel{
+color: white;
+text-decoration: none;
+}
+
+.custom-file-width {
+    width: 500px;  /* or any width you prefer */
+    max-width: 100%;
+}
+
+#cafe-select{
+  width:89%;
+  font-size: 20px;;
+}
+.cafe-select{
+      display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
 }

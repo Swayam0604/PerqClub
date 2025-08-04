@@ -56,7 +56,7 @@
     <li><a href="{% url 'register_cafe' %}" class="cta-button Join-now">Register a Cafe</a></li>
     <li><a href="{% url 'logout_user' %}" class="cta-button-2">Log Out</a></li>
 {% else %}
-    <li><a href="#" class="cta-button-2">{{ user.username }}</a></li>
+    <li><a href="{% url 'edit_profile' %}" class="cta-button-2">{{ user.username }}</a></li>
     <li><a href="{% url 'logout_user' %}" class="cta-button-2">Log Out</a></li>
 {% endif %}
          </ul>

@@ -27,7 +27,15 @@ class Cafe(models.Model):
     is_approved = models.BooleanField(default=False)
     is_cafe_of_the_week = models.BooleanField(default=False)
     location = models.ForeignKey('CafeLocation', on_delete=models.PROTECT,null=True)
-    manager = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='cafes',null=True, blank=True)
+    manager = models.ForeignKey(
+    CustomUser,
+    on_delete=models.CASCADE,
+    related_name='cafes',
+    null=True,
+    blank=True,
+    limit_choices_to={'is_cafe': True}
+)
+
 
     def __str__(self):
         return f"{self.cafe_name} ({self.branch_name or 'Main'})"    #
@@ -85,6 +93,8 @@ class CafeReview(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
     helpful_count = models.PositiveIntegerField(default=0)
     reply = models.TextField(blank=True, null=True)
+    is_featured = models.BooleanField(default=False, help_text="Admin can pick up to 3 as best/featured.")
+
 
     class Meta:
         ordering = ['-date_posted'] # Order reviews by most recent first

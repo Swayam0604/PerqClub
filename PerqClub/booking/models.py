@@ -8,7 +8,17 @@ class Booking(models.Model):
     time = models.TimeField()
     people = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')], default='pending')
+    status = models.CharField(
+    max_length=10,
+    choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+        ('cancelled', 'Cancelled'),  # <- add this
+    ],
+    default='pending'
+)
+
 
 
     def __str__(self):

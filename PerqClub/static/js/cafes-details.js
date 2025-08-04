@@ -611,3 +611,112 @@ function initCafeCardSlideshow(cafeCard) {
          toggleReviewFormBtn.textContent = "Hide review form";
      }
  });
+
+
+
+
+
+//  
+ document.addEventListener("DOMContentLoaded", function () {
+   // Select all cafe slideshows on the page
+   const slideshows = document.querySelectorAll(".cafe-slideshow");
+
+   slideshows.forEach((slideshow) => {
+     const slides = slideshow.querySelectorAll(".slide");
+     const dots = slideshow.querySelectorAll(".dot");
+     const prevBtn = slideshow.querySelector(".prev-btn");
+     const nextBtn = slideshow.querySelector(".next-btn");
+     let currentIndex = 0;
+     let slideInterval;
+
+     function showSlide(index) {
+       slides.forEach((slide) => slide.classList.remove("active"));
+       dots.forEach((dot) => dot.classList.remove("active"));
+
+       slides[index].classList.add("active");
+       dots[index].classList.add("active");
+       currentIndex = index;
+     }
+
+     function nextSlide() {
+       showSlide((currentIndex + 1) % slides.length);
+     }
+
+     function prevSlide() {
+       showSlide((currentIndex - 1 + slides.length) % slides.length);
+     }
+
+     function resetInterval() {
+       clearInterval(slideInterval);
+       startInterval();
+     }
+
+     function startInterval() {
+       slideInterval = setInterval(nextSlide, 4000); // 4 seconds interval
+     }
+
+     // Initialize slideshow
+     showSlide(0);
+     startInterval();
+
+     // Event Listeners
+     if (prevBtn) {
+       prevBtn.addEventListener("click", () => {
+         prevSlide();
+         resetInterval();
+       });
+     }
+
+     if (nextBtn) {
+       nextBtn.addEventListener("click", () => {
+         nextSlide();
+         resetInterval();
+       });
+     }
+
+     dots.forEach((dot, i) => {
+       dot.addEventListener("click", () => {
+         showSlide(i);
+         resetInterval();
+       });
+     });
+
+     // Pause on hover
+     slideshow.addEventListener("mouseenter", () =>
+       clearInterval(slideInterval)
+     );
+     slideshow.addEventListener("mouseleave", () => startInterval());
+
+     // Touch events for swipe support
+     let touchStartX = 0;
+     let touchEndX = 0;
+
+     slideshow.addEventListener(
+       "touchstart",
+       (e) => {
+         touchStartX = e.changedTouches[0].screenX;
+       },
+       { passive: true }
+     );
+
+     slideshow.addEventListener(
+       "touchend",
+       (e) => {
+         touchEndX = e.changedTouches[0].screenX;
+         handleSwipe();
+       },
+       { passive: true }
+     );
+
+     function handleSwipe() {
+       const minSwipeDistance = 50;
+       if (touchEndX < touchStartX - minSwipeDistance) {
+         nextSlide();
+         resetInterval();
+       } else if (touchEndX > touchStartX + minSwipeDistance) {
+         prevSlide();
+         resetInterval();
+       }
+     }
+   });
+ });

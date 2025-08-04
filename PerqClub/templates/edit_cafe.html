@@ -1,0 +1,208 @@
+{% extends 'profile.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block dashboard_content %}
+<div class="container mt-5 text-white">
+
+  <!-- Debug Info -->
+  <div style="background: #ffe9e9; padding: 10px; margin-bottom: 20px;">
+    <strong>Debug Info:</strong><br>
+    Selected Cafe ID: {{ cafe.id }}<br>
+    Selected Cafe Name: {{ cafe.cafe_name }}<br>
+    Cafe Exists: {% if cafe %}Yes{% else %}No{% endif %}
+  </div>
+
+  <h2 class="mb-4 text-xl font-bold">Edit {{ cafe.cafe_name }}</h2>
+
+  <!-- Cafe Selector Dropdown -->
+  <form method="GET" action="" class="mb-6" id="cafe-select-form">
+    <label for="cafe-select" class="block mb-2 font-semibold text-white">
+      Select Café to Edit:
+    </label>
+    <select id="cafe-select" name="cafe_id" class="text-black p-2 rounded w-full max-w-md">
+      {% for option_cafe in all_cafes %}
+        <option value="{{ option_cafe.id }}" {% if cafe and option_cafe.id == cafe.id %}selected{% endif %}>
+          {{ option_cafe.cafe_name }}
+        </option>
+      {% empty %}
+        <option disabled>No Cafés available</option>
+      {% endfor %}
+      <option value="add">+ Add New Café</option>
+    </select>
+    <button type="submit" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded submit-btn">
+      Load Café
+    </button>
+  </form>
+
+  {% if cafe %}
+
+  <!-- Cafe Details Form -->
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="cafe" />
+
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <h3 class="text-lg font-semibold border-b border-gray-600 pb-2 mb-4 title">Cafe Details</h3>
+      {{ cafe_form.non_field_errors }}
+      {% for field in cafe_form %}
+        <div class="mb-3">
+          <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-red-400 text-sm">{{ field.errors|join:", " }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <button type="submit" name="form_type" value="cafe" class="submit-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+      Save Cafe Details
+    </button>
+  </form>
+
+  <!-- Cafe Images Form -->
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="images" />
+
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <h3 class="text-lg font-semibold border-b border-gray-600 pb-2 mb-4 title">Cafe Images</h3>
+      {{ image_formset.management_form }}
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto text-white">
+          <thead>
+            <tr class="bg-gray-700">
+              <th class="px-2 py-1 w-48">Image</th>
+              <th class="px-2 py-1 w-64">Alt Text</th>
+              <th class="px-2 py-1 w-24 text-center">Order</th>
+              <th class="px-2 py-1 w-16 text-center">Delete?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for form in image_formset %}
+<tr class="bg-gray-900 border-b border-gray-700">
+  {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+  <td class="px-2 py-2 w-48">
+    {{ form.image|add_class:"custom-file-width" }}
+    {% if form.image.errors %}
+      <div class="text-red-400 text-xs">{{ form.image.errors|join:", " }}</div>
+    {% endif %}
+  </td>
+  <td class="px-2 py-2 w-64">
+    {{ form.alt_text }}
+  </td>
+  <td class="px-2 py-2 w-24 text-center">
+    {{ form.order }}
+  </td>
+  <td class="px-2 py-2 w-16 text-center">
+    {{ form.DELETE }}
+  </td>
+</tr>
+{% if form.non_field_errors %}
+<tr><td colspan="4" class="text-red-400 text-sm px-2 py-1">{{ form.non_field_errors }}</td></tr>
+{% endif %}
+{% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+
+      {% if image_formset.total_form_count < image_formset.max_num %}
+        <button type="submit" class="add-image text-sm mt-2 text-blue-400">+ Add another Cafe Image</button>
+      {% endif %}
+    </div>
+
+    <button type="submit" name="form_type" value="images" class="submit-btn hover:bg-blue-600 text-white py-2 px-4 rounded">
+      Save Cafe Images
+    </button>
+  </form>
+
+  <!-- Cafe Highlights Form -->
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="highlights" />
+
+    <div class="bg-gray-800 p-4 rounded-lg shadow mb-6">
+      <h3 class="text-lg font-semibold border-b border-gray-600 pb-2 mb-4 title">Cafe Highlights</h3>
+      {{ highlight_formset.management_form }}
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto text-white">
+          <thead>
+            <tr class="bg-gray-700">
+              <th class="px-2 py-1 w-64">Highlight Text</th>
+              <th class="px-2 py-1 w-48">Icon Class</th>
+              <th class="px-2 py-1 w-24 text-center">Order</th>
+              <th class="px-2 py-1 w-16 text-center">Delete?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for form in highlight_formset %}
+<tr class="bg-gray-900 border-b border-gray-700">
+  {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+  <td class="px-2 py-2 w-64">
+    {{ form.highlight_text }}
+  </td>
+  <td class="px-2 py-2 w-48">
+    {{ form.icon_class }}
+  </td>
+  <td class="px-2 py-2 w-24 text-center">
+    {{ form.order }}
+  </td>
+  <td class="px-2 py-2 w-16 text-center">
+    {{ form.DELETE }}
+  </td>
+</tr>
+{% if form.non_field_errors %}
+<tr><td colspan="4" class="text-red-400 text-sm px-2 py-1">{{ form.non_field_errors }}</td></tr>
+{% endif %}
+{% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if highlight_formset.total_form_count < highlight_formset.max_num %}
+        <button type="submit" class="add-highlight text-sm mt-2 text-blue-400">+ Add another Cafe Highlight</button>
+      {% endif %}
+    </div>
+
+    <button type="submit" name="form_type" value="highlights" class="submit-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+      Save Cafe Highlights
+    </button>
+  </form>
+
+  {% else %}
+    <p class="text-white mt-4">Please select a café above to edit its details.</p>
+  {% endif %}
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const cafeSelect = document.getElementById("cafe-select");
+  const cafeForm = document.getElementById("cafe-select-form");
+  
+  cafeSelect.addEventListener("change", function(event) {
+    console.log("Dropdown changed, selected value:", this.value); // Debug log
+    
+    if (this.value === "add") {
+      // Prevent the form from submitting
+      event.preventDefault();
+      
+      // Navigate to register cafe page - removed trailing slash
+      console.log("Redirecting to register cafe page..."); // Debug log
+      window.location.href = "/register-cafe";
+    } else {
+      // For other options, submit the form normally
+      console.log("Submitting form for cafe ID:", this.value); // Debug log
+      cafeForm.submit();
+    }
+  });
+});
+</script>
+
+
+
+{% endblock %}

@@ -1,199 +1,162 @@
 {% extends "base.html" %}
 {% load static %} 
-{% block title %}PerQClub - Registration Success
-{% endblock %}
- {% block css %}
-<link rel="stylesheet" href="{% static 'css/profile.css' %}" /> 
+
+{% block title %}PerQClub - Dashboard{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
 {% endblock css %}
 
 {% block content %}
-<div class="profile-dashboard-container">
-  <aside class="profile-sidebar">
-    <div class="profile-avatar">
-      <!-- Show first letter of name or image -->
-      <span>
-        {% if user.profile.image %}
-          <img src="{{ user.profile.image.url }}" alt="{{ user.get_full_name }}" />
-        {% elif user.is_superuser %}
-          A
-        {% elif user.is_cafe %}
-          C
-        {% else %}
-          {{ user.get_full_name|default:user.username|first }} 
-        {% endif %}
-      </span>
+<div class="profile-dashboard-container flex flex-col lg:flex-row">
+
+  <!-- Sidebar -->
+  <aside class="profile-sidebar w-full lg:w-1/4 bg-white shadow p-4">
+    <div class="profile-avatar flex items-center justify-center mb-4">
+      {% if user.profile.image %}
+        <img src="{{ user.profile.image.url }}" alt="{{ user.get_full_name }}" class="rounded-full w-20 h-20 object-cover" />
+      {% elif user.is_superuser %}
+        <span class="avatar-circle">A</span>
+      {% elif user.is_cafe %}
+        <span class="avatar-circle">C</span>
+      {% else %}
+        <span class="avatar-circle">{{ user.get_full_name|default:user.username|first }}</span>
+      {% endif %}
     </div>
-    <div class="profile-name">{{ user.get_full_name }}
+
+    <div class="profile-name text-center font-semibold text-lg">
+      {{ user.get_full_name }}
       {% if user.is_superuser %}
         <span class="admin-badge">Admin</span>
       {% elif user.is_cafe %}
         <span class="cafe-badge">{{ user.username }}</span>
       {% endif %}
     </div>
-    <div class="profile-membership">
+
+    <div class="profile-membership text-center text-sm text-gray-500 mt-2">
       {% if user.is_superuser %}
-    Admin
+        Admin
       {% elif user.is_authenticated and user.is_cafe %}
-    Cafe Partner
-  {% elif user.is_authenticated and membership %}
-    {{ membership.plan.name }} Member
-  {% elif user.is_authenticated and not membership %}
-    {{ user.username }} - No Membership
-  {% elif user.is_authenticated %}
-    {{ user.username }} - No Membership
-  {% endif %}
+        Cafe Partner
+      {% elif user.is_authenticated and not user.is_cafe %}
+        {% if membership %}
+          {{ membership.plan.name }} Member
+        {% else %}
+          {{ membership_status }}
+        {% endif %}
+      {% else %}
+        No Membership
+      {% endif %}
     </div>
-    <ul class="profile-menu">
-      <li class="active">Edit Profile</li>
-      <li>Bookings</li>
-      <li>Membership</li>
-      <li>Recently Viewed Cafes</li>
-      <li>Followed</li>
-      <li>Manage Cards</li>
-      <li>Wishlist Cafes</li>
-      <li>Reviews</li>
-      <li>Account Settings</li>
-      <li class="logout">Log Out</li>
+
+    <ul class="profile-menu mt-6 space-y-2">
+      <li><a href="{% url 'edit_profile' %}" class="togel hover:text-amber-700 {% if request.path == '/profile/edit/' %}font-bold{% endif %}">Edit Profile</a></li>
+      <li><a href="{% url 'change_password' %}" class="togel hover:text-amber-700 {% if request.path == '/profile/password/' %}font-bold{% endif %}">Change Password</a></li>
+
+      {% if user.is_cafe and user.cafes.exists %}
+      <li>
+        <a href="{% url 'edit_cafe'%}" class="togel hover:text-amber-700">Your Café</a>
+      </li>
+      {% endif %}
+
+      {% if user.is_superuser %}
+        <li>
+        <a href="{% url 'edit_cafe' %}" class="togel hover:text-amber-700">All Cafés</a>
+        </li>
+      {% endif %}
+      
+      <li class="logout text-red-600 mt-4 cursor-pointer hover:text-red-800 transition-colors duration-200" onclick="window.location.href='{% url 'logout_user' %}'">Log Out</li>
     </ul>
   </aside>
-  <main class="profile-main">
-    <section class="profile-header">
-      <div class="profile-info-block">
+
+  <!-- Main Dashboard Content -->
+  <main class="profile-main w-full lg:w-3/4 p-6">
+    <section class="profile-header mb-6">
+      <div class="profile-info-block mb-4">
+        <h2 class="text-xl font-bold mb-1">Welcome back, {{ user.username }}!</h2>
         {% if user.is_superuser %}
-          <h2>Welcome back, {{ user.username }} !!</h2>
           <p>You have full administrative access.</p>
-        {% comment %} <!-- {% elif user.is_staff %}
-          <h2>Welcome back, {{ user.username }} !!</h2>
-          <p>You have staff privileges.</p> --> {% endcomment %}
         {% elif user.is_cafe %}
-          <h2>Welcome back,{{ user.username }} !!</h2>
           <p>Thank you for partnering with us!</p>
+        {% elif membership %}
+          <p>Membership valid till <strong>{{ membership.end_date }}</strong></p>
         {% else %}
-          <h2>Welcome back, {{ user.username }} !!</h2>
-          {% if membership %}
-            <p>Membership valid till <strong>{{ membership.end_date }}</strong></p>
-          {% else %}
-            <p>No active membership.</p>
-          {% endif %}
+          <p>{{ membership_status }}</p>
         {% endif %}
       </div>
-      {% if user.is_superuser %}
-      <div class="profile-stats">
-        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
-        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
-        <div><span>{{ memberships_count }}</span><label>Memberships</label></div>
-        <div><span>{{ cafes_count }}</span><label>Cafes</label></div>
-        <div><span>{{ user_count }}</span><label>User</label>
+
+      <div class="profile-stats grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-center">
+        <div><span class="text-xl font-bold">{{ bookings_count }}</span><div class="text-sm">Bookings</div></div>
+        <div><span class="text-xl font-bold">{{ reviews_count }}</span><div class="text-sm">Reviews</div></div>
+
+        {% if user.is_superuser %}
+          <div><span class="text-xl font-bold">{{ memberships_count }}</span><div class="text-sm">Memberships</div></div>
+          <div><span class="text-xl font-bold">{{ cafes_count }}</span><div class="text-sm">Cafés</div></div>
+          <div><span class="text-xl font-bold">{{ user_count }}</span><div class="text-sm">Users</div></div>
+        {% elif user.is_authenticated and not user.is_cafe %}
+          <div>
+            <span class="text-xl font-bold">{{ membership_status }}</span>
+            <div class="text-sm">Membership</div>
+          </div>
+        {% endif %}
       </div>
-      {% elif user.is_cafe %}
-      <div class="profile-stats">
-        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
-        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
-      </div>
-      {% elif user.is_authenticated %}
-      <div class="profile-stats">
-        <div><span>{{ bookings_count }}</span><label>Bookings</label></div>
-        <div><span>{{ reviews_count }}</span><label>Reviews</label></div>
-        {% if membership %}
-  <div>
-    <span>
-      {% if membership.is_active %}
-        Active
-      {% else %}
-        Inactive
-      {% endif %}
-    </span>
-    <label>Membership</label>
-  </div>
-{% else %}
-  <div>
-    <span>No Membership</span>
-    <label>Membership</label>
-  </div>
-{% endif %}
-      {% endif %}
     </section>
-    <section class="profile-content">
-  <h3 class="text-xl font-semibold mb-4">Edit Profile</h3>
 
-  <form method="post" class="space-y-6">
-    {% csrf_token %}
-    
-    <!-- Render profile form fields -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {{ form.non_field_errors }}
-
-      <div>
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {{ form.username.errors }}
-      </div>
-
-      <div>
-        {{ form.email.label_tag }}
-        {{ form.email }}
-        {{ form.email.errors }}
-      </div>
-
-      <div>
-        {{ form.first_name.label_tag }}
-        {{ form.first_name }}
-        {{ form.first_name.errors }}
-      </div>
-
-      <div>
-        {{ form.last_name.label_tag }}
-        {{ form.last_name }}
-        {{ form.last_name.errors }}
-      </div>
-
-      <div>
-        {{ form.phone_number.label_tag }}
-        {{ form.phone_number }}
-        {{ form.phone_number.errors }}
-      </div>
-    </div>
-
-    <!-- Password Change Section -->
-    <div class="mt-8 border-t pt-6">
-      <h4 class="text-lg font-semibold mb-2">Change Password</h4>
-
-      {{ password_form.non_field_errors }}
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          {{ password_form.old_password.label_tag }}
-          {{ password_form.old_password }}
-          {{ password_form.old_password.errors }}
-        </div>
-        <div>
-          {{ password_form.new_password1.label_tag }}
-          {{ password_form.new_password1 }}
-          {{ password_form.new_password1.errors }}
-        </div>
-        <div>
-          {{ password_form.new_password2.label_tag }}
-          {{ password_form.new_password2 }}
-          {{ password_form.new_password2.errors }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Submit -->
-    <div class="mt-6">
-      <button type="submit" class="px-6 py-2 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition">
-        Save Changes
-      </button>
-    </div>
-  </form>
-</section>
-
+    <!-- Dynamic Section -->
+    {% block dashboard_content %}
+    {% endblock %}
   </main>
+
 </div>
-
-
 {% endblock content %}
 
 
 {% block js %}
 <script src="{% static 'js/profile.js' %}"></script>
-{% endblock js %}
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const toggleBtn = document.getElementById('toggle-cafes');
+  const cafesList = document.getElementById('cafes-list');
+  const icon = document.getElementById('toggle-icon');
+
+  if (toggleBtn && cafesList && icon) {
+    // Ensure initial state - dropdown closed
+    cafesList.classList.add('hidden');
+    icon.textContent = '▼';
+
+    toggleBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      console.log('Toggle button clicked'); // Debug log
+      
+      // Toggle the dropdown visibility
+      if (cafesList.classList.contains('hidden')) {
+        // Show dropdown
+        cafesList.classList.remove('hidden');
+        icon.textContent = '▲';
+        console.log('Dropdown opened'); // Debug log
+      } else {
+        // Hide dropdown
+        cafesList.classList.add('hidden');
+        icon.textContent = '▼';
+        console.log('Dropdown closed'); // Debug log
+      }
+    });
+
+    // Optional: Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!toggleBtn.contains(e.target) && !cafesList.contains(e.target)) {
+        cafesList.classList.add('hidden');
+        icon.textContent = '▼';
+      }
+    });
+  } else {
+    console.log('Elements not found:', { toggleBtn, cafesList, icon }); // Debug log
+  }
+});
+</script>
+
+
+{% endblock %}

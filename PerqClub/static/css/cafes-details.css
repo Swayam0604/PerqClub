@@ -1121,6 +1121,10 @@ footer {
   .review-card {
     width: 311px;
   }
+  .cafes-container {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap : 25px
+  }
 }
 
 @media screen and (max-width: 425px) {
@@ -1145,3 +1149,116 @@ footer {
     margin-bottom: 10px;
   }
 }
+
+
+
+
+/*  */
+/*NEARBY CAFES*/
+:root {
+  --primary-color: #c87d30; /* Medium coffee brown */
+  --primary-dark: #4a2c12; /* Dark coffee brown */
+  --primary-light: #7d4f2a;
+  --accent-color: #f1e4d4;
+  --text-dark: #333333;
+  --text-light: #ffffff;
+  --text-muted: #7d4f2a;
+  --shadow-color: rgba(74,44,18,0.15);
+  --card-bg: #fff;
+}
+
+.cafe-card {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  background-color: var(--card-bg);
+}
+.cafe-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.cafe-slideshow {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+.slides-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+.slide.active { opacity: 1; }
+
+.slideshow-nav {
+  position: absolute;
+  bottom: 15px; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+.prev-btn, .next-btn {
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 35px; height: 35px;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s;
+}
+.prev-btn:hover,
+.next-btn:hover { background: rgba(255,255,255,0.9); }
+
+.slide-dots {
+  display: flex; gap: 8px;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.dot.active { background: #fff; }
+
+.cafe-details {
+  padding: 20px;
+}
+.cafe-details h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+.cafe-location {
+  font-size: 14px;
+  color: #777;
+}
+.cafe-specialty-tag {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  background: var(--accent-color);
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+@media screen and (max-width: 576px) {
+  .cafe-slideshow { height: 220px; }
+  .cafe-details { padding: 15px; }
+  .cafe-specialty-tag { padding: 4px 12px; }
+}
+
+
